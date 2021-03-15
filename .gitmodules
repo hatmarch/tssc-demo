@@ -1,0 +1,4 @@
+[submodule "rekor"]
+	path = rekor
+	url = https://github.com/hatmarch/rekor.git
+	branch = tssc-demo
