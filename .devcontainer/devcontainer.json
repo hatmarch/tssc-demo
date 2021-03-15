@@ -39,5 +39,7 @@
 		//"go.inferGopath": true,
 		"go.gopath": "/home/jboss/.che",
 		"go.useLanguageServer": true,
+		"editor.tabCompletion": "on",
+		"editor.snippetSuggestions": "top"
 	}
 }
