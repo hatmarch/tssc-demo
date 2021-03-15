@@ -31,7 +31,20 @@
 		"joaompinto.asciidoctor-vscode",
 		"humao.rest-client",
 		"ms-kubernetes-tools.vscode-kubernetes-tools",
+		"haaaad.ansible"
 	],
+	"files.associations": {
+        "**/ansible/**/*": "ansible",
+		"ansible/": "ansible",
+        // "**/tasks/**/*.yml" : "ansible",
+        // "**/handler/*.yml" : "ansible",
+        // "**/*_vars/**/*.yml" : "ansible",
+        // "**/roles/**/*.yml" : "ansible",
+        // "**/playbooks/**/*.yml" : "ansible",
+        // "**/*ansible*/**/*.yml" : "ansible",
+        // "**/vars/**/*.yml": "ansible",
+        // "**/inventory/*/*": "ansible"
+    },
 	"settings":{
 		"terminal.integrated.shell.linux": "/bin/zsh",
 		"go.goroot": "/usr/local/go",
