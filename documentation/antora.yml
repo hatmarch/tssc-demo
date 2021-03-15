@@ -1,5 +1,5 @@
-name: template-tutorial
-title: Template Tutorial
+name: tssc-demo
+title: Trusted Software Supply Chain Demo
 version: master
 nav:
   - modules/ROOT/nav.adoc

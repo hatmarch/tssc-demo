@@ -2,9 +2,9 @@ runtime:
   cache_dir: ./.cache/antora
 
 site:
-  title: Template Tutorial
-  url: https://redhat-scholars.github.io/course-template
-  start_page: template-tutorial::index.adoc
+  title: Trusted Software Supply Chain Demo 
+  url: https://hatmarch.github.io/tssc-demo
+  start_page: tssc-demo::index.adoc
 
 content:
   sources:
@@ -15,13 +15,14 @@ asciidoc:
   attributes:
     release-version: master
     page-pagination: true
+    git_repo: https://github.com/hatmarch/tssc-demo
   extensions:
     - ./lib/tab-block.js
     - ./lib/remote-include-processor.js
 
 ui:
   bundle:
-    url: https://github.com/redhat-scholars/course-ui/releases/download/v0.1.0/ui-bundle.zip
+    url: https://github.com/redhat-scholars/course-ui/releases/download/v0.1.8/ui-bundle.zip
     snapshot: true
   supplemental_files:
     - path: ./supplemental-ui
