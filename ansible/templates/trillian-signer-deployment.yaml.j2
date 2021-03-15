@@ -1,0 +1,50 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: '1'
+  name: trillian-signer
+  namespace: '{{ rekor_project }}'
+  labels:
+    app: trillian-signer
+    app.kubernetes.io/component: trillian-signer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trillian-signer
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: trillian-signer
+    spec:
+      containers:
+        - name: log-signer
+          image: gcr.io/trillian-opensource-ci/log_signer
+          args:
+            - '--storage_system=mysql'
+            - '--mysql_uri=test:zaphod@tcp(trillian-db:3306)/test'
+            - '--rpc_endpoint=0.0.0.0:8090'
+            - '--http_endpoint=0.0.0.0:8091'
+            - '--force_master'
+            - '--alsologtostderr'
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1G
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

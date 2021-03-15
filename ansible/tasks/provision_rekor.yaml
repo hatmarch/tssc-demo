@@ -1,0 +1,96 @@
+---
+- name: Create Rekor Namespace
+  k8s:
+    api_version: v1
+    kind: Namespace
+    name: '{{ rekor_project }}'
+    state: present
+
+- name: Create Redis
+  k8s:
+    api_version: apps/v1
+    kind: Deployment
+    name: '{{ rekor_project }}'
+    state: present
+    resource_definition: "{{ lookup('template', 'redis-deployment.yaml.j2') }}"
+
+- name: Create Redis Service
+  k8s:
+    api_version: v1
+    kind: Service
+    name: '{{ rekor_project }}'
+    state: present
+    resource_definition: "{{ lookup('template', 'redis-service.yaml.j2') }}"
+
+- name: Create Trillian DB Deployment
+  k8s:
+    api_version: apps/v1
+    kind: Deployment
+    name: '{{ rekor_project }}'
+    state: present
+    resource_definition: "{{ lookup('template', 'trillian-db-deployment.yaml.j2') }}"
+
+- name: Create Trillian DB Service
+  k8s:
+    api_version: v1
+    kind: Service
+    name: '{{ rekor_project }}'
+    state: present
+    resource_definition: "{{ lookup('template', 'trillian-db-service.yaml.j2') }}"
+
+- name: Create Trillian Log Deployment
+  k8s:
+    api_version: apps/v1
+    kind: Deployment
+    name: '{{ rekor_project }}'
+    state: present
+    resource_definition: "{{ lookup('template', 'trillian-log-deployment.yaml.j2') }}"
+
+- name: Create Trillian Log Service
+  k8s:
+    api_version: v1
+    kind: Service
+    name: '{{ rekor_project }}'
+    state: present
+    resource_definition: "{{ lookup('template', 'trillian-log-service.yaml.j2') }}"
+
+- name: Create Trillian Signer Deployment
+  k8s:
+    api_version: apps/v1
+    kind: Deployment
+    name: '{{ rekor_project }}'
+    state: present
+    resource_definition: "{{ lookup('template', 'trillian-signer-deployment.yaml.j2') }}"
+
+- name: Create Trillian Signer Service
+  k8s:
+    api_version: v1
+    kind: Service
+    name: '{{ rekor_project }}'
+    state: present
+    resource_definition: "{{ lookup('template', 'trillian-signer-service.yaml.j2') }}"
+
+
+- name: Create Rekor Server
+  k8s:
+    state: present
+    resource_definition: "{{ lookup('template', 'rekor-server.yaml.j2') }}"
+
+- name: Wait for Rekor Server to Start
+  k8s_info:
+    kind: Deployment
+    name: rekor-server 
+    namespace: '{{ rekor_project }}'
+    api_version: apps/v1
+  register: r_k8s_info
+  until: r_k8s_info.resources[0].status.readyReplicas | default(0) >= 1
+  retries: 30
+  delay: 2
+
+- name: Create Rekor Route
+  k8s:
+    api_version: route.openshift.io/v1
+    kind: Route
+    name: '{{ rekor_project }}'
+    state: present
+    resource_definition: "{{ lookup('template', 'rekor-server-route.yaml.j2') }}"

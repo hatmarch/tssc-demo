@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    alpha.image.policy.openshift.io/resolve-names: '*'
+    openshift.io/generated-by: OpenShiftWebConsole
+  labels:
+    app: trillian-log
+    app.kubernetes.io/component: trillian-log
+    app.kubernetes.io/instance: trillian-log
+    app.openshift.io/runtime: elastic
+    app.openshift.io/runtime-namespace: rekor-operator-system
+  name: trillian-log
+  namespace: '{{ rekor_project }}'
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: trillian-log
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftWebConsole
+      creationTimestamp: null
+      labels:
+        app: trillian-log
+        deploymentconfig: trillian-log
+    spec:
+      containers:
+        - args:
+            - --storage_system=mysql
+            - --mysql_uri=test:zaphod@tcp(trillian-db:3306)/test
+            - --rpc_endpoint=0.0.0.0:8091
+            - --http_endpoint=0.0.0.0:8090
+            - --alsologtostderr
+          image: gcr.io/trillian-opensource-ci/log_server@sha256:6edd7dc1873c1444aa2d9be91fc989f1a8bb1cabef9776922ac715e144ff247a
+          imagePullPolicy: Always
+          name: trillian-log
+          ports:
+            - containerPort: 8090
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1G
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

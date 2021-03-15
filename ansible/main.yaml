@@ -1,0 +1,29 @@
+- name: Deploy demo
+  hosts: localhost
+  connection: local
+  become: false
+  gather_facts: true
+  tags:
+    - step007
+  tasks:
+  - name: Install Prerequisites
+    include_tasks:
+      file: ./tasks/prereq_workload.yaml
+      apply:
+        become: "{{ become_override | bool }}"
+    when: (install_prereq == "true" ) 
+        and (ACTION == "create")
+
+  - name: Create Main Demo Components
+    include_tasks:
+      file: ./tasks/main_demo_workload.yaml
+      apply:
+        become: "{{ become_override | bool }}"
+    when: ACTION == "create"
+  
+  - name: Running Workload removal Tasks
+    include_tasks:
+      file: ./tasks/remove_workload.yaml
+      apply:
+        become: "{{ become_override | bool }}"
+    when: ACTION == "destroy" or ACTION == "remove"

@@ -1,0 +1,21 @@
+
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  labels:
+    app: rekor-server
+    app.kubernetes.io/component: rekor-server
+    app.kubernetes.io/instance: rekor-server
+    app.openshift.io/runtime-version: "0.1"
+  name: rekor-server
+  namespace: '{{ rekor_project }}'
+spec:
+  port:
+    targetPort: 3000-tcp
+  to:
+    kind: Service
+    name: rekor-server
+    weight: 100
+  wildcardPolicy: None

@@ -1,0 +1,4 @@
+---
+- name: Create Rekor 
+  include_tasks: provision_rekor.yaml
+

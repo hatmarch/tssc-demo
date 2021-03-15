@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  labels:
+    app: trillian-db
+    app.kubernetes.io/component: trillian-db
+    app.kubernetes.io/instance: trillian-db
+    app.openshift.io/runtime-version: 3c8193ebb2d7fedb44d18e9c810d0d2e4dbb7e4d
+  name: trillian-db
+  namespace: '{{ rekor_project }}'
+spec:
+  ports:
+    - name: 3306-tcp
+      port: 3306
+      protocol: TCP
+      targetPort: 3306
+  selector:
+    app: trillian-db
+    deploymentconfig: trillian-db
+  sessionAffinity: None
+  type: ClusterIP
