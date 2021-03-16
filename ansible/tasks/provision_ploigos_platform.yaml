@@ -1,0 +1,36 @@
+---
+- name: Generate Helm values file
+  template:
+    src: templates/ploigos/values.yaml.j2
+    dest: /tmp/values.yml
+
+- name: Check if helm chart exists
+  shell: |
+    if [[ -n "$(helm list -n {{ ploigos_namespace }} | grep ploigos)" ]]; then echo "true"; else echo "false"; fi
+  register: result
+
+- name: Set chart_installed
+  set_fact:
+    chart_installed: "{{ result.stdout_lines[0] }}"
+ 
+- name: Debug Chart
+  debug:
+    msg: "Chart installed is: {{ chart_installed }}"
+
+- name: Run the ploigos helm chart
+  shell: |
+    cd $DEMO_HOME/helm/charts/ploigos
+    helm upgrade --install ploigos . --namespace {{ ploigos_namespace }} --create-namespace -f /tmp/values.yml
+  when: ( not chart_installed )
+
+- name: Wait for Platform to finish
+  k8s_info:
+    kind: TsscPlatform
+    name: tsscplatform
+    namespace: '{{ ploigos_namespace }}'
+    api_version: redhatgov.io/v1alpha1
+  register: r_k8s_info
+  until: r_k8s_info.resources[0].status.conditons | default(0) >= 1
+  retries: 30
+  delay: 10
+  when: ( wait_for_ploigos_platform == true )

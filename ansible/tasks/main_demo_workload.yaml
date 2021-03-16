@@ -2,3 +2,6 @@
 - name: Create Rekor 
   include_tasks: provision_rekor.yaml
 
+- name: Create Ploigos Factory
+  include_tasks: provision_ploigos_platform.yaml
+

@@ -12,7 +12,7 @@
     kind: Deployment
     name: '{{ rekor_project }}'
     state: present
-    resource_definition: "{{ lookup('template', 'redis-deployment.yaml.j2') }}"
+    resource_definition: "{{ lookup('template', 'rekor/redis-deployment.yaml.j2') }}"
 
 - name: Create Redis Service
   k8s:
@@ -20,7 +20,7 @@
     kind: Service
     name: '{{ rekor_project }}'
     state: present
-    resource_definition: "{{ lookup('template', 'redis-service.yaml.j2') }}"
+    resource_definition: "{{ lookup('template', 'rekor/redis-service.yaml.j2') }}"
 
 - name: Create Trillian DB Deployment
   k8s:
@@ -28,7 +28,7 @@
     kind: Deployment
     name: '{{ rekor_project }}'
     state: present
-    resource_definition: "{{ lookup('template', 'trillian-db-deployment.yaml.j2') }}"
+    resource_definition: "{{ lookup('template', 'rekor/trillian-db-deployment.yaml.j2') }}"
 
 - name: Create Trillian DB Service
   k8s:
@@ -36,7 +36,7 @@
     kind: Service
     name: '{{ rekor_project }}'
     state: present
-    resource_definition: "{{ lookup('template', 'trillian-db-service.yaml.j2') }}"
+    resource_definition: "{{ lookup('template', 'rekor/trillian-db-service.yaml.j2') }}"
 
 - name: Create Trillian Log Deployment
   k8s:
@@ -44,7 +44,7 @@
     kind: Deployment
     name: '{{ rekor_project }}'
     state: present
-    resource_definition: "{{ lookup('template', 'trillian-log-deployment.yaml.j2') }}"
+    resource_definition: "{{ lookup('template', 'rekor/trillian-log-deployment.yaml.j2') }}"
 
 - name: Create Trillian Log Service
   k8s:
@@ -52,7 +52,7 @@
     kind: Service
     name: '{{ rekor_project }}'
     state: present
-    resource_definition: "{{ lookup('template', 'trillian-log-service.yaml.j2') }}"
+    resource_definition: "{{ lookup('template', 'rekor/trillian-log-service.yaml.j2') }}"
 
 - name: Create Trillian Signer Deployment
   k8s:
@@ -60,7 +60,7 @@
     kind: Deployment
     name: '{{ rekor_project }}'
     state: present
-    resource_definition: "{{ lookup('template', 'trillian-signer-deployment.yaml.j2') }}"
+    resource_definition: "{{ lookup('template', 'rekor/trillian-signer-deployment.yaml.j2') }}"
 
 - name: Create Trillian Signer Service
   k8s:
@@ -68,13 +68,13 @@
     kind: Service
     name: '{{ rekor_project }}'
     state: present
-    resource_definition: "{{ lookup('template', 'trillian-signer-service.yaml.j2') }}"
+    resource_definition: "{{ lookup('template', 'rekor/trillian-signer-service.yaml.j2') }}"
 
 
 - name: Create Rekor Server
   k8s:
     state: present
-    resource_definition: "{{ lookup('template', 'rekor-server.yaml.j2') }}"
+    resource_definition: "{{ lookup('template', 'rekor/rekor-server.yaml.j2') }}"
 
 - name: Wait for Rekor Server to Start
   k8s_info:
@@ -93,4 +93,4 @@
     kind: Route
     name: '{{ rekor_project }}'
     state: present
-    resource_definition: "{{ lookup('template', 'rekor-server-route.yaml.j2') }}"
+    resource_definition: "{{ lookup('template', 'rekor/rekor-server-route.yaml.j2') }}"

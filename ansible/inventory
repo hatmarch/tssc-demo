@@ -7,3 +7,6 @@ silent=false
 rekor_project=tssc-demo-rekor
 install_prereq=false
 rekor_server_image=quay.io/mhildenb/rekor-server@sha256:209e3aa16873c6d69a030bc760c6162361d651ec8b4320859b98672ec1f4275c
+ploigos_operator_version=ploigos-software-factory-operator.v0.2.5
+ploigos_namespace=devsecops
+wait_for_ploigos_platform=false
