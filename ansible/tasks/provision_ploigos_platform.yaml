@@ -25,7 +25,6 @@
     helm upgrade --install ploigos . --namespace {{ ploigos_namespace }} --create-namespace -f /tmp/values.yml
   when: ( not chart_installed )
 
-# FIXME: This doesn't quite work right
 - name: Wait for Platform to finish
   k8s_info:
     kind: TsscPlatform
@@ -33,7 +32,12 @@
     namespace: '{{ ploigos_namespace }}'
     api_version: redhatgov.io/v1alpha1
   register: r_k8s_info
-  until: r_k8s_info.resources[0].status.conditons | default(0) >= 1
+  until: (r_k8s_info.resources[0].status.conditions[0].reason | default(0) == "Successful")
+    and (r_k8s_info.resources[0].status.conditions[0].status | default(0) == "True")
   retries: 30
   delay: 10
-  when: ( wait_for_ploigos_platform == true )
+  when: ( wait_for_ploigos_platform | bool )
+
+# - name: Debug platform status
+#   debug: 
+#     msg: "Reason: {{ r_k8s_info.resources[0].status.conditions[0].reason }}.  Status: {{ r_k8s_info.resources[0].status.conditions[0].status }}"
