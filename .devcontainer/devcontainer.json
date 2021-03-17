@@ -50,7 +50,7 @@
 		"go.goroot": "/usr/local/go",
 		"workbench.colorTheme": "August - City Lights (Darker)",
 		//"go.inferGopath": true,
-		"go.gopath": "/home/jboss/.che",
+		"go.gopath": "/home/jboss/che",
 		"go.useLanguageServer": true,
 		"editor.tabCompletion": "on",
 		"editor.snippetSuggestions": "top"

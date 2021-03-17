@@ -2,4 +2,9 @@
 - name: Pre-req Task
   debug:
     msg: "Pre-req run"
+
+- name: Build Rekor CLI
+  include_tasks: build_rekor_cli.yaml
+
+
     

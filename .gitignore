@@ -43,4 +43,8 @@ node_modules
 .firebase
 
 # local information not for checkin
-/secrets
+secrets/
+
+# built assets
+bin/
+pkg/generated/

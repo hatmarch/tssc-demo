@@ -1,0 +1,27 @@
+---
+- name: Check for existing rekor CLI
+  shell: |
+    if [[ -f "${DEMO_HOME}/bin/rekor" ]]; then echo "true"; else echo "false"; fi
+  register: result
+  failed_when: result.rc != 0
+
+- name: Rekor CLI vars
+  set_fact:
+    rekor_cli_exists: "{{ result.stdout_lines[0] }}"
+
+- name: Debug cli vars
+  debug:
+    msg: "Rekor cli exists: {{ rekor_cli_exists }}"
+
+- name: Build CLI
+  shell: |
+    set -euo pipefail
+    mkdir -p $DEMO_HOME/bin
+    cd $DEMO_HOME/rekor
+    mkdir -p pkg/generated
+    make cli
+    mv cli ${DEMO_HOME}/bin/rekor
+    chmod +x ${DEMO_HOME}/bin/rekor
+  register: build_commands
+  failed_when: build_commands.rc != 0
+  when: not (rekor_cli_exists | bool)
