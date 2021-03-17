@@ -4,6 +4,7 @@ kind: Route
 metadata:
   annotations:
     openshift.io/host.generated: "true"
+    haproxy.router.openshift.io/timeout: 2m
   labels:
     app: rekor-server
     app.kubernetes.io/component: rekor-server
