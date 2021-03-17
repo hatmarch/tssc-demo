@@ -1,13 +1,15 @@
 ---
 - name: Generate Helm values file
   template:
-    src: templates/ploigos/values.yaml.j2
+    src: templates/ploigos/ploigos-pipeline-helm-values.yaml.j2
     dest: /tmp/values.yml
 
+# FIXME: Also check for successful chart install
 - name: Check if helm chart exists
   shell: |
     if [[ -n "$(helm list -n {{ ploigos_namespace }} | grep ploigos)" ]]; then echo "true"; else echo "false"; fi
   register: result
+  failed_when: result.rc != 0
 
 - name: Set chart_installed
   set_fact:
@@ -23,6 +25,7 @@
     helm upgrade --install ploigos . --namespace {{ ploigos_namespace }} --create-namespace -f /tmp/values.yml
   when: ( not chart_installed )
 
+# FIXME: This doesn't quite work right
 - name: Wait for Platform to finish
   k8s_info:
     kind: TsscPlatform
