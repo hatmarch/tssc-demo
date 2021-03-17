@@ -6,3 +6,17 @@
     namespace: '{{ ploigos_namespace }}'
     state: present
     resource_definition: "{{ lookup('template', 'ploigos/{{ pipeline_template_name }}.yaml.j2') }}"
+
+# FIXME: Name of the pipeline resource should come from a fact on the CR that is created previously
+- name: Wait for Pipeline to deploy
+  k8s_info:
+    kind: TsscPipeline
+    name: tsscpipeline-jenkins
+    namespace: '{{ ploigos_namespace }}'
+    api_version: redhatgov.io/v1alpha1
+  register: r_k8s_info
+  until: (r_k8s_info.resources[0].status.conditions[0].reason | default(0) == "Successful")
+    and (r_k8s_info.resources[0].status.conditions[0].status | default(0) == "True")
+  retries: 30
+  delay: 10
+  when: ( wait_for_ploigos_crs | bool )

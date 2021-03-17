@@ -5,3 +5,6 @@
 - name: Create Ploigos Factory
   include_tasks: provision_ploigos_platform.yaml
 
+- name: Create Ploigos Pipeline
+  include_tasks: provision_ploigos_pipeline.yaml
+
