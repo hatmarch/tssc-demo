@@ -10,3 +10,6 @@ rekor_server_image=quay.io/mhildenb/rekor-server@sha256:209e3aa16873c6d69a030bc7
 ploigos_operator_version=ploigos-software-factory-operator.v0.2.5
 ploigos_namespace=devsecops
 wait_for_ploigos_platform=false
+pipeline_template_name=tsscpipeline-jenkins
+pipeline_artifact_git_repo=http://gitea.tssc.rht-set.com/akrohg/reference-quarkus-mvn_jenkins_workflow-standard.git
+pipeline_config_git_repo=http://gitea.tssc.rht-set.com/ploigos-reference-applications/reference-quarkus-mvn-cloud-resources_jenkins_workflow-standard.git

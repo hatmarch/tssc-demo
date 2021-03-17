@@ -1,0 +1,8 @@
+---
+- name: Create Pipeline CR
+  k8s:
+    api_version: redhatgov.io/v1alpha1
+    kind: TsscPipeline
+    namespace: '{{ ploigos_namespace }}'
+    state: present
+    resource_definition: "{{ lookup('template', 'ploigos/{{ pipeline_template_name }}.yaml.j2') }}"
