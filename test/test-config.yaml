@@ -1,0 +1,110 @@
+---
+step-runner-config:
+  config-decryptors:
+  - implementer: SOPS
+
+  global-defaults:
+    organization: platform
+    application-name: ref-quarkus-mvn-jenkins-std
+    service-name: fruit
+
+  generate-metadata:
+  - implementer: Maven
+  - implementer: Git
+  - implementer: SemanticVersion
+
+  tag-source:
+  - implementer: Git
+
+  unit-test:
+  - implementer: Maven
+
+  package:
+  - implementer: Maven
+
+  static-code-analysis:
+  - implementer: SonarQube
+
+  push-artifacts:
+  - implementer: Maven
+
+  create-container-image:
+  - implementer: Buildah
+    config:
+      destination: localhost/tssc-reference-app-quarkus-rest-json
+
+  push-container-image:
+  - implementer: Skopeo
+
+  sign-container-image:
+  - implementer: PodmanSign
+  - implementer: CurlPush
+
+  container-image-static-compliance-scan:
+  # sample scans using DataStream file (preferred)
+  - name: OpenSCAP - Compliance - Example Compliance Profile for UBI8 Container Images [Based on xccdf_org.ssgproject.content_profile_standard]
+    implementer: OpenSCAP
+    config:
+      oscap-input-definitions-uri: https://atopathways.redhatgov.io/compliance-as-code/scap/ssg-rhel8-ds.xml
+      oscap-tailoring-uri: https://raw.githubusercontent.com/ploigos/ploigos-example-oscap-content/main/xccdf_com.redhat.ploigos_profile_example_ubi8-tailoring-xccdf.xml
+      oscap-profile: xccdf_com.redhat.ploigos_profile_example_ubi8
+
+  #- name: OpenSCAP - Compliance - Standard System Security Profile for Red Hat Enterprise Linux 8
+  #  implementer: OpenSCAP
+  #  config:
+  #    oscap-input-definitions-uri: https://atopathways.redhatgov.io/compliance-as-code/scap/ssg-rhel8-ds.xml
+  #    oscap-profile: xccdf_org.ssgproject.content_profile_standard
+
+  #- name: OpenSCAP - Compliance - Protection Profile for General Purpose Operating Systems
+  #  implementer: OpenSCAP
+  #  config:
+  #    oscap-input-definitions-uri: https://atopathways.redhatgov.io/compliance-as-code/scap/ssg-rhel8-ds.xml
+  #    oscap-profile: xccdf_org.ssgproject.content_profile_ospp
+
+  #- name: OpenSCAP - Compliance - DISA STIG for Red hat Enterprise Linux 8
+  #  implementer: OpenSCAP
+  #  config:
+  #    oscap-input-definitions-uri: https://atopathways.redhatgov.io/compliance-as-code/scap/ssg-rhel8-ds.xml
+  #    oscap-profile: xccdf_org.ssgproject.content_profile_stig
+
+  # sample scans using XCCDF file (okay if you don't have access to DataStream)
+  #- name: OpenSCAP - Compliance - DISA STIG for Red hat Enterprise Linux 8
+  #  implementer: OpenSCAP
+  #  config:
+  #    oscap-input-definitions-uri: https://atopathways.redhatgov.io/compliance-as-code/scap/ssg-rhel8-xccdf.xml
+  #    oscap-profile: stig
+
+  #- name: OpenSCAP - Compliance - Protection Profile for General Purpose Operating Systems
+  #  implementer: OpenSCAP
+  #  config:
+  #    oscap-input-definitions-uri: https://atopathways.redhatgov.io/compliance-as-code/scap/ssg-rhel8-xccdf.xml
+  #    oscap-profile: ospp
+
+  container-image-static-vulnerability-scan:
+  # sample vulnerability scan using XCCDF file (preferred)
+  - name: OpenSCAP - Vulnerability - DataStream
+    implementer: OpenSCAP
+    config:
+      oscap-input-definitions-uri: https://www.redhat.com/security/data/metrics/ds/v2/RHEL8/rhel-8.ds.xml.bz2
+
+  # sample scans using OVAL file (if you must, but XCCDF is muuuuch better if availabe)
+  #- name: OpenSCAP - Vulnerability - OVAL
+  #  implementer: OpenSCAP
+  #  config:
+  #    oscap-input-definitions-uri: https://www.redhat.com/security/data/oval/v2/RHEL8/rhel-8.oval.xml.bz2
+  # sample scan using DataStream file
+
+  deploy:
+  - implementer: ArgoCD
+    config:
+      num-replicas: 1
+      route-enabled: true
+
+  validate-environment-configuration:
+  - implementer: ConfiglintFromArgocd
+  - implementer: Configlint
+    config:
+      rules: cicd/ValidateEnv/
+
+  uat:
+  - implementer: MavenSeleniumCucumber

@@ -2,3 +2,7 @@
 	path = rekor
 	url = https://github.com/hatmarch/rekor.git
 	branch = tssc-demo
+[submodule "ploigos-step-runner"]
+	path = ploigos-step-runner
+	url = https://github.com/ploigos/ploigos-step-runner.git
+	branch = main

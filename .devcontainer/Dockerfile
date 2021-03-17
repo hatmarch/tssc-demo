@@ -2,6 +2,7 @@ FROM quay.io/mhildenb/tssc-demo-base:latest
 
 USER root
 
+RUN pip3 install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple ploigos-step-runner
 
 ENV PATH="$PATH:/usr/local/kubebuilder/bin:/usr/local/kubebuilder/bin:/usr/local/go/bin"
 ENV GOPATH=/home/jboss/che
