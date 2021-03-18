@@ -3,8 +3,8 @@ FROM quay.io/mhildenb/tssc-demo-base:latest
 USER root
 
 
-ENV PATH="$PATH:/usr/local/kubebuilder/bin:/usr/local/kubebuilder/bin:/usr/local/go/bin"
 ENV GOPATH=/home/jboss/che
+ENV PATH="$PATH:/usr/local/kubebuilder/bin:/usr/local/kubebuilder/bin:/usr/local/go/bin:$GOPATH/bin"
 
 USER jboss
 
