@@ -53,6 +53,12 @@
 		"go.gopath": "/home/jboss/che",
 		"go.useLanguageServer": true,
 		"editor.tabCompletion": "on",
-		"editor.snippetSuggestions": "top"
+		"editor.snippetSuggestions": "top",
+		"go.delveConfig": {
+			"dlvLoadConfig": {
+				"maxStringLen": 1024,
+			},
+			"apiVersion": 2,
+		},
 	}
 }

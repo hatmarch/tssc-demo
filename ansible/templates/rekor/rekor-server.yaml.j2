@@ -35,20 +35,39 @@ spec:
     spec:
       containers:
         - args:
-            - rekor-server
+{% if (rekor_debug_support | bool) %}
+            - dlv
+            - exec
+            - '--headless'
+            - '--listen=:30123'
+            - '--log=true'
+            - '--api-version=2'
+            - '--continue'
+            - '--accept-multiclient'
+            - '--'
+{% endif %}
+            - /usr/local/bin/rekor-server
             - serve
             - --trillian_log_server.address=trillian-log
             - --trillian_log_server.port=8091
             - --rekor_server.address=0.0.0.0
             - --redis_server.address=redis
             - --redis_server.port=6379
+{% if (rekor_debug_support | bool) %}
+            - --log_type=dev
+{% else %}
             - --log_type=prod
-          image: "{{ rekor_server_image }}" 
-          imagePullPolicy: IfNotPresent
+{% endif %}
+          image: "{{ rekor_server_image }}{% if (rekor_debug_support | bool) %}-debug{% endif %}"
+          imagePullPolicy: Always
           name: rekor-server
           ports:
             - containerPort: 3000
               protocol: TCP
+{% if (rekor_debug_support | bool) %}
+            - containerPort: 30123
+              protocol: TCP
+{% endif %}
           resources:
             requests:
               cpu: 500m
@@ -79,6 +98,12 @@ spec:
       port: 3000
       protocol: TCP
       targetPort: 3000
+{% if (rekor_debug_support | bool) %}
+    - name: delve-tcp
+      port: 30123
+      protocol: TCP
+      targetPort: 30123
+{% endif %}
   selector:
     app: rekor-server
     deploymentconfig: rekor-server

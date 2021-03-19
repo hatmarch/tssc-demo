@@ -20,6 +20,53 @@
                 "--redis_server.port=6379",
                 "--log_type=prod"
             ]
-        }
+        },
+        {
+            "name": "Remote debug in Kubernetes",
+            "type": "go",
+            "request": "attach",
+            "mode":"remote",
+            "remotePath": "/opt/app-root/src/cmd/server/main.go",
+            "port": 30123,
+            "host": "localhost",
+            "showLog": true,
+        },
+        {
+            "name": "Debug delve",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${file}",
+            "env": {},
+            "args": [
+                "serve",
+                "--trillian_log_server.address=localhost",
+                "--trillian_log_server.port=8090",
+                "--rekor_server.address=0.0.0.0",
+                "--redis_server.address=localhost",
+                "--redis_server.port=6379",
+                "--log_type=prod"
+            ]
+        },
+        {
+            "name": "Debug rekor",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "/workspaces/tssc-demo/rekor/cmd/cli/main.go",
+            //"program": "${file}",
+            "env": {},
+            "args": [
+                "upload",
+                "--rekor_server",
+                "http://rekor-server-tssc-demo-rekor.apps.cluster-3627.3627.example.opentlc.com",
+                "--signature",
+                "/workspaces/tssc-demo/secrets/mysignature.asc",
+                "--public-key",
+                "/workspaces/tssc-demo/secrets/gpg_public_key",
+                "--artifact"
+                "/workspaces/tssc-demo/rekor/OWNERS.md"
+            ]
+        },
     ]
 }
