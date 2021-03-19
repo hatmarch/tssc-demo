@@ -18,8 +18,7 @@
     set -euo pipefail
     mkdir -p $DEMO_HOME/bin
     cd $DEMO_HOME/rekor
-    mkdir -p pkg/generated
-    make cli
+    go build ./cmd/cli
     mv cli ${DEMO_HOME}/bin/rekor
     chmod +x ${DEMO_HOME}/bin/rekor
   register: build_commands
