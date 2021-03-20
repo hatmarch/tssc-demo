@@ -5,6 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Debug PSR",
+            "type": "python",
+            "request": "launch",
+            "program": "${env:DEMO_HOME}/ploigos-step-runner/src/ploigos_step_runner/__main__.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-s",
+                "sign-container-image",
+                "-c",
+                "${env:DEMO_HOME}/test/test-config.yaml"
+            ],
+            "env":{
+                "PYTHONPATH": "/workspaces/tssc-demo/ploigos-step-runner/src"
+            }
+        },
+        {
             "name": "Debug go file",
             "type": "go",
             "request": "launch",
@@ -25,7 +41,7 @@
             "name": "Remote debug in Kubernetes",
             "type": "go",
             "request": "attach",
-            "mode":"remote",
+            "mode": "remote",
             "remotePath": "/opt/app-root/src/cmd/server/main.go",
             "port": 30123,
             "host": "localhost",

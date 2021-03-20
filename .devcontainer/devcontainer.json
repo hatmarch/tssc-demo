@@ -1,6 +1,11 @@
 {
 	"name": "Trusted Software Supply Chain Demo",
 	"dockerFile": "Dockerfile",
+	"build": {
+		"args": {
+			"PLOIGOS_STEPRUNNER_IMAGE" : "quay.io/ploigos/ploigos-tool-containers:v0.16.0",
+		}
+	},
 	"runArgs": [
 		// FIXME: Due to issues with docker for mac, need to mount the docker socket in this .raw way
 		// see: https://github.com/docker/for-mac/issues/4755
@@ -31,7 +36,8 @@
 		"joaompinto.asciidoctor-vscode",
 		"humao.rest-client",
 		"ms-kubernetes-tools.vscode-kubernetes-tools",
-		"haaaad.ansible"
+		"haaaad.ansible",
+		"ms-python.python"
 	],
 	"files.associations": {
         "**/ansible/**/*": "ansible",

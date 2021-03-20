@@ -1,8 +1,14 @@
+# override this in devcontainer.json as necessary
+ARG PLOIGOS_STEPRUNNER_IMAGE=quay.io/ploigos/ploigos-tool-containers:v0.16.0
+FROM $PLOIGOS_STEPRUNNER_IMAGE as ploigos
+
 FROM quay.io/mhildenb/tssc-demo-base:latest
 
 USER root
 
-RUN pip3 install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple ploigos-step-runner
+COPY --from=ploigos /usr/local/lib/python3.6/site-packages /usr/local/lib/python3.6/site-packages
+RUN rm -rf /usr/local/lib/python3.6/site-packages/ploigos_step_runner \
+    && pip3 install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pylint
 
 ENV GOPATH=/home/jboss/che
 ENV PATH="$PATH:/usr/local/kubebuilder/bin:/usr/local/kubebuilder/bin:/usr/local/go/bin:$GOPATH/bin"
