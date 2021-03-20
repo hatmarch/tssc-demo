@@ -68,6 +68,14 @@ spec:
             - containerPort: 30123
               protocol: TCP
 {% endif %}
+          livenessProbe:
+            exec:
+              command:
+              - 'curl'
+              - '-f'
+              - 'http://localhost:3000/ping'
+            initialDelaySeconds: 5
+            periodSeconds: 5
           resources:
             requests:
               cpu: 500m
