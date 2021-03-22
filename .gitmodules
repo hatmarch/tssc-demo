@@ -4,5 +4,5 @@
 	branch = tssc-demo
 [submodule "ploigos-step-runner"]
 	path = ploigos-step-runner
-	url = https://github.com/ploigos/ploigos-step-runner.git
+	url = https://github.com/hatmarch/ploigos-step-runner
 	branch = main
