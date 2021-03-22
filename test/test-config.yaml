@@ -36,9 +36,12 @@ step-runner-config:
   push-container-image:
   - implementer: Skopeo
 
+  # sign-container-image:
+  # - implementer: PodmanSign
+  # - implementer: CurlPush
+
   sign-container-image:
-  - implementer: PodmanSign
-  - implementer: CurlPush
+  - implementer: RekorLog
 
   container-image-static-compliance-scan:
   # sample scans using DataStream file (preferred)
