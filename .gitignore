@@ -47,4 +47,7 @@ secrets/
 
 # built assets
 bin/
-pkg/generated/
+
+# side effects of local ploigos steprunner testing
+step-runner-results/
+step-runner-working/
