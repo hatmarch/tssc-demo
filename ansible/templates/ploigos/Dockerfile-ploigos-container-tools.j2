@@ -1,0 +1,17 @@
+# See also: https://github.com/ploigos/ploigos-containers/blob/main/ploigos-tool-containers/Containerfile.ubi8
+
+ARG PLOIGOS_STEPRUNNER_IMAGE_BASE=quay.io/ploigos/ploigos-tool-containers:v0.16.0
+ARG PLOIGOS_SITE_DIR=/usr/local/lib/python3.6/site-packages
+
+FROM $PLOIGOS_STEPRUNNER_IMAGE_BASE as ploigos
+
+USER root
+
+# Patch in our version of the step-runner
+COPY {{ ploigos_dir }}//workspaces/tssc-demo/ploigos-step-runner/src/ploigos_step_runner/step_implementers/sign_container_image ${PLOIGOS_SITE_DIR}/ploigos_step_runner/step_implementers/sign_container_image
+
+
+# install local build of rekor
+# install 
+
+USER $PLOIGOS_USER_UID

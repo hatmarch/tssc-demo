@@ -36,27 +36,14 @@ step-runner-config:
   push-container-image:
   - implementer: Skopeo
 
-  # sign-container-image:
-  # - implementer: PodmanSign
-  # - implementer: CurlPush
-
   sign-container-image:
+  - implementer: PodmanSign
+  - implementer: CurlPush
   - implementer: RekorLog
     config:
-      rekor-server-url: 'http://rekor-server-tssc-demo-rekor.apps.cluster-3627.3627.example.opentlc.com'
-      artifact-signature-file-path: '/workspaces/tssc-demo/secrets/artifact.asc'
-      container-image-signature-file-path: '/workspaces/tssc-demo/secrets/OWNERS.md'
-      container-image-signature-private-key-fingerprint: '97901C34A0026E2F2F9E40F992418AD1F23FDF56'
-      container-image-signature-name: 'platform/ref-quarkus-mvn-jenkins-std-fruit@sha256=df42ba9f9eff7060f68eaf205edf9d26b3d80c55ca47e9c480e594ea1b505736/signature-1'
-      container-image-signature-server-password: 'REXA2e4PuV9mMhDO'
-      container-image-signature-server-url: 'https://nexus-devsecops.apps.cluster-3627.3627.example.opentlc.com/repository/container-image-signatures'
-      container-image-signature-server-username: 'tssc'
-  # - implementer: CurlPush
-  #   config:
-  #     container-image-signature-server-password: REXA2e4PuV9mMhDO
-  #     container-image-signature-server-url: https://nexus-devsecops.apps.cluster-3627.3627.example.opentlc.com/repository/container-image-signatures
-  #     container-image-signature-server-username: tssc
-
+      rekor-server-url: http://rekor-server-tssc-demo-rekor.apps.cluster-3627.3627.example.opentlc.com/
+      artifact-signature-file-path: artifact.asc
+  - implementer: CurlPush
 
   container-image-static-compliance-scan:
   # sample scans using DataStream file (preferred)
@@ -126,3 +113,4 @@ step-runner-config:
 
   uat:
   - implementer: MavenSeleniumCucumber
+
