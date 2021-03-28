@@ -13,7 +13,7 @@ $0: Create CDC Monolith Demo --
 
   Usage: ${0##*/} [ OPTIONS ]
   
-    -p <TEXT>  [optional] Project prefix to use.  Defaults to "cdc-demo"
+    -p <TEXT>  [optional] Project prefix to use.  Defaults to "tssc-demo"
     -v         [optional] Run ansible playbooks in verbose mode
     -i         [optional] Install pre-requisites
 
