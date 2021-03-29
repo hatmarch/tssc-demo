@@ -22,6 +22,15 @@
                 "kind": "build",
                 "isDefault": true
             },
-        }
+        },
+        {
+            "label": "clean-results",
+            "type": "shell",
+            "command": "${env:DEMO_HOME}/scripts/clean-steprunner-artifacts.sh",
+            "group": {
+                "kind": "clean",
+                "isDefault": false
+            },
+        },
     ]
 }

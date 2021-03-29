@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "${env:DEMO_HOME}/ploigos-step-runner/src/ploigos_step_runner/__main__.py",
-            "console": "integratedTerminal",
+            "console": "integratedTerminal", 
             "args": [
                 "-s",
                 "sign-container-image",
@@ -17,8 +17,10 @@
                 "${env:DEMO_HOME}/test/test-config.yaml"
             ],
             "env":{
-                "PYTHONPATH": "/workspaces/tssc-demo/ploigos-step-runner/src"
-            }
+                "PYTHONPATH": "/workspaces/tssc-demo/ploigos-step-runner/src",
+                "REKOR_REKOR_SERVER": "${env:REKOR_REKOR_SERVER}"
+            },
+            "preLaunchTask": "clean-results"
         },
         {
             "name": "Debug go file",
