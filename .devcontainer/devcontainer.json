@@ -66,5 +66,7 @@
 			},
 			"apiVersion": 2,
 		},
+		"python.envFile": "${workspaceFolder}/.env",
+		"python.testing.pytestEnabled": true
 	}
 }
