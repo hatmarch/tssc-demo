@@ -7,7 +7,7 @@
 # FIXME: Also check for successful chart install
 - name: Check if helm chart exists
   shell: |
-    if [[ -n "$(helm list -n {{ ploigos_namespace }} | grep ploigos)" ]]; then echo "true"; else echo "false"; fi
+    if [[ -n "$(helm list -n {{ ploigos_namespace }} --deployed | grep ploigos)" ]]; then echo "true"; else echo "false"; fi
   register: result
   failed_when: result.rc != 0
 

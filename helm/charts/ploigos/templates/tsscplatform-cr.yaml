@@ -8,11 +8,26 @@ metadata:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "25"
   namespace: {{ $key.name }}
-  name: tsscplatform
+  name: tsscplatform-jenkins
 spec:
   tsscPlatform:
-    pullSecret:
-      name: installation-pull-secrets
-      namespace: openshift-image-registry
+    # pullSecret:
+    #   name: installation-pull-secrets
+    #   namespace: openshift-image-registry
+    services:
+      continuousIntegration:
+        name: jenkins
+      sourceControl:
+        name: gitea
+      artifactRepository:
+        name: nexus
+      staticCodeAnalysis:
+        name: sonarqube
+      continuousDeployment:
+        name: argocd
+      uat:
+        name: selenium
+      containerRegistry:
+        name: nexus
 {{- end }}
 {{- end }}
