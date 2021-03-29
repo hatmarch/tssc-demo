@@ -2,12 +2,18 @@
 
 ARG PLOIGOS_STEPRUNNER_IMAGE_BASE=quay.io/ploigos/ploigos-tool-containers:v0.16.0
 
+# See also: https://github.com/ploigos/ploigos-containers/blob/main/ploigos-base/Containerfile.ubi8
+ARG PLOIGOS_USER_UID=1001
+
+ARG RESOURCE_DIRECTORY=/workspaces/tssc-demo/test/resources/
+
 FROM $PLOIGOS_STEPRUNNER_IMAGE_BASE as ploigos
 
 # NOTE it's important to set this arg here to be able to use it in this stage
 ARG PLOIGOS_SITE_PACKAGES_DIR=/usr/local/lib/python3.6/site-packages
 ARG REKOR_CLI_PATH=bin/rekor
-
+ARG PLOIGOS_USER_UID
+ARG RESOURCE_DIRECTORY
 
 USER root
 
@@ -18,3 +24,5 @@ COPY ploigos-step-runner/src/ploigos_step_runner/ ${PLOIGOS_SITE_PACKAGES_DIR}/p
 COPY ${REKOR_CLI_PATH} /usr/local/bin
 
 USER $PLOIGOS_USER_UID
+
+COPY --chmod 755 $RESOURCE_DIRECTORY /home/ploigos/resources
