@@ -25,17 +25,28 @@
     helm upgrade --install ploigos . --namespace {{ ploigos_namespace }} --create-namespace -f /tmp/values.yml
   when: ( not chart_installed )
 
+# FIXME: Hack related to issue in Ploigos operator
+# The rhsso-operator needs permission to be able to do things like creating a route
+# which it doesn't appear to be able to do by default
+- name: "HACK: give rhsso-operator elevated privileges"
+  shell: |
+    oc adm policy add-cluster-role-to-user cluster-admin -n {{ ploigos_namespace }} -z rhsso-operator 
+  register: adm_result
+  until: adm_result.rc == 0
+  retries: 10
+  delay: 2
+
 - name: Wait for Platform to finish
   k8s_info:
     kind: TsscPlatform
-    name: tsscplatform
+    name: tsscplatform-jenkins
     namespace: '{{ ploigos_namespace }}'
     api_version: redhatgov.io/v1alpha1
   register: r_k8s_info
   until: (r_k8s_info.resources[0].status.conditions[0].reason | default(0) == "Successful")
     and (r_k8s_info.resources[0].status.conditions[0].status | default(0) == "True")
-  retries: 50
-  delay: 15
+  retries: 10
+  delay: 2
   when: ( wait_for_ploigos_crs | bool )
 
 # - name: Debug platform status

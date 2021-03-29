@@ -11,23 +11,31 @@ metadata:
   name: tsscplatform-jenkins
 spec:
   tsscPlatform:
-    # pullSecret:
-    #   name: installation-pull-secrets
-    #   namespace: openshift-image-registry
+    helmRepository: 'https://ploigos.github.io/ploigos-charts'
+    pullSecret:
+      name: installation-pull-secrets
+      namespace: openshift-image-registry
     services:
       continuousIntegration:
         name: jenkins
+        managed: true
       sourceControl:
         name: gitea
+        managed: true
       artifactRepository:
         name: nexus
+        managed: true
       staticCodeAnalysis:
         name: sonarqube
+        managed: true
       continuousDeployment:
         name: argocd
+        managed: true
       uat:
         name: selenium
+        managed: true
       containerRegistry:
         name: nexus
+        managed: true
 {{- end }}
 {{- end }}
