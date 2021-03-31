@@ -25,4 +25,4 @@ COPY ${REKOR_CLI_PATH} /usr/local/bin
 
 USER $PLOIGOS_USER_UID
 
-COPY --chmod 755 $RESOURCE_DIRECTORY /home/ploigos/resources
+# COPY --chmod=755 $RESOURCE_DIRECTORY /home/ploigos/resources
