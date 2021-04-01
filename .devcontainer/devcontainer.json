@@ -67,6 +67,11 @@
 			"apiVersion": 2,
 		},
 		"python.envFile": "${workspaceFolder}/.env",
-		"python.testing.pytestEnabled": true
+		"python.testing.pytestEnabled": true,
+		"python.testing.pytestArgs": [
+			"ploigos-step-runner"
+		],
+		"python.testing.unittestEnabled": false,
+		"python.testing.nosetestsEnabled": false,
 	}
 }

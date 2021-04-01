@@ -8,10 +8,10 @@ USER root
 
 COPY --from=ploigos /usr/local/lib/python3.6/site-packages /usr/local/lib/python3.6/site-packages
 RUN rm -rf /usr/local/lib/python3.6/site-packages/ploigos_step_runner \
-    && pip3 install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pylint pytest
+    && pip3 install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pylint pytest testfixtures
 
 ENV GOPATH=/home/jboss/che
-ENV PATH="$PATH:/usr/local/kubebuilder/bin:/usr/local/kubebuilder/bin:/usr/local/go/bin:$GOPATH/bin"
+ENV PATH="$PATH:/usr/local/kubebuilder/bin:/usr/local/kubebuilder/bin:/usr/local/go/bin:$GOPATH/bin:$DEMO_HOME/bin"
 
 USER jboss
 
