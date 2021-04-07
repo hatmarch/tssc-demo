@@ -8,14 +8,18 @@ site:
 
 content:
   sources:
-    - url: ./
+    - url: .
+      branches: HEAD
       start_path: documentation
 
 asciidoc:
   attributes:
+    title: Trusted Software Supply Chain Demo
     release-version: master
     page-pagination: true
     git_repo: https://github.com/hatmarch/tssc-demo
+    app_code_repo_name: 'reference-app-code'
+    rekor_project: 'tssc-demo-rekor'
   extensions:
     - ./lib/tab-block.js
     - ./lib/remote-include-processor.js

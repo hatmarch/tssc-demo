@@ -1,20 +1,25 @@
-= Welcome to Template Tutorial
+= Trusted Software Supply Chain Demo
 :page-layout: home
 :!sectids:
 
 [.text-center.strong]
-== Publish Services to Kubernetes
+== Overview 
 
-A Kubernetes tutorial to show how you can deploy a Java service to a Kubernetes cluster as it was a child game.
+This is a demo to show Red Hat's interpretation of the link:https://dodcio.defense.gov/Portals/0/Documents/DoD%20Enterprise%20DevSecOps%20Reference%20Design%20v1.0_Public%20Release.pdf[Department of Defense's Software Enterprise DevSecOps Reference Design]
+
+It makes use of the following components:
+
+. link:https://github.com/ploigos/ploigos-software-factory-operator[The Ploigos Operator]: Red Hat sponsored operator for creating a trusted software supply chain
+. link:https://github.com/sigstore/rekor[Rekor]: An immutable signature transparency log to provide further provenance and auditability for resources created by Ploigos
 
 [.tiles.browse]
 == Browse modules
 
 [.tile]
-.xref:01-setup.adoc[Get Started]
-* xref:01-setup.adoc#minikube[Minikube]
+.xref:01-setup.adoc[Demo Setup]
 
 [.tile]
-.xref:02-deploy.adoc[Deploying]
-* xref:02-deploy.adoc#package[Package the Application]
-* xref:02-deploy.adoc#deploy[Deploy the Application]
+.xref:walkthrough.adoc[Walkthrough]
+* xref:walkthrough.adoc#platform[Trusted Software Supply Chain Platform]
+* xref:walkthrough.adoc#pipeline[Create and Examine Pipeline]
+* xref:walkthrough.adoc#rekor[Review Rekor Logs]

@@ -1,0 +1,14 @@
+apiVersion: redhatgov.io/v1alpha1
+kind: TsscPipeline
+metadata:
+  name: tsscpipeline-jenkins
+spec:
+  appName: reference-app
+  appRepo:
+    destinationRepoName: {app_code_repo_name}
+    sourceUrl: 'https://github.com/hatmarch/ploigos-reference-app.git'
+  autoStartPipeline: true
+  helmRepo:
+    destinationRepoName: reference-helm-gitops
+    sourceUrl: 'https://github.com/hatmarch/ploigos-reference-helm.git'
+  serviceName: reference-app-fruit
