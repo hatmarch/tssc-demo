@@ -1,0 +1,25 @@
+# NOTE: This gets called from an outer loop in remove_operators.yaml
+- name: Uninstall Operator
+  block:
+    - name: Print CSV
+      debug:
+        msg: "current csv is: {{ subscription.status.currentCSV }}"
+    - name: Set CSV
+      set_fact:
+        current_csv: "{{ subscription.status.currentCSV }}"
+
+    - name: Delete Subscription
+      k8s:
+        state: absent
+        api_version: operators.coreos.com/v1alpha1
+        kind: Subscription
+        name: "{{ subscription.metadata.name }}"
+        namespace: '{{ operators_project }}'
+
+    - name: Delete ClusterServiceVersion
+      k8s:
+        state: absent
+        api_version: operators.coreos.com/v1alpha1
+        kind: ClusterServiceVersion
+        name: '{{ current_csv }}'
+        namespace: '{{ operators_project }}'

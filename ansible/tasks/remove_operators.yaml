@@ -1,0 +1,32 @@
+---
+- name: vars
+  set_fact:
+      operators_project: 'openshift-operators'
+      operators: 
+        - gatekeeper-operator-product
+
+# The schema of registered vars in loops is described 
+# here: https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html#registering-variables-with-a-loop 
+- name: Get Subs
+  k8s_info:
+    kind: Subscription
+    api_version: operators.coreos.com/v1alpha1
+    namespace: '{{ operators_project }}'
+    name: "{{ item }}"
+  register: sub_info
+  loop: "{{ operators }}"
+
+- name: Flatten Found Subscription Dictionary
+  set_fact:
+    subscriptions: "{{ sub_info | json_query('results[*].resources[0]') }}"
+
+- name: Print Subscription
+  debug:
+    msg: "Got sub {{ item }}"
+  loop: "{{ subscriptions }}"
+
+- name: Remove Operators
+  include_tasks: remove_operator.yaml
+  loop: "{{ subscriptions }}"
+  loop_control:
+    loop_var: subscription
