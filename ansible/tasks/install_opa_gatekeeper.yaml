@@ -1,0 +1,48 @@
+---
+- name: Create OPA Subscription 
+  k8s:
+    api_version: operators.coreos.com/v1alpha1
+    kind: Subscription
+    namespace: openshift-operators
+    state: present
+    resource_definition: "{{ lookup('template', 'opa/opa_sub.yaml.j2') }}"
+
+- name: Register Gatekeeper CSV
+  k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: Subscription
+    namespace: openshift-operators
+  register: r_gatekeeper_sub
+  until: 
+    - r_gatekeeper_sub is defined
+    - r_gatekeeper_sub.resources is defined
+    - r_gatekeeper_sub.resources[0] is defined
+    - r_gatekeeper_sub.resources[0].status is defined
+    - r_gatekeeper_sub.resources[0].status.currentCSV is defined
+  retries: 20
+  delay: 5
+
+- name: Register CSV name
+  set_fact:
+    gatekeeper_csv_name: "{{ r_gatekeeper_sub.resources[0].status.currentCSV }}"
+
+- name: Message
+  debug:
+    msg: "Gatekeeper csv name: {{ gatekeeper_csv_name }}"
+
+- name: Wait for Gatekeeper CSV to be succeeded
+  k8s_info:
+    api_version: operators.coreos.com/v1alpha1
+    kind: ClusterServiceVersion
+    name: "{{ gatekeeper_csv_name }}"
+    namespace: openshift-operators
+  register: r_gatekeeper_csv
+  until: 
+    - r_gatekeeper_csv is defined
+    - r_gatekeeper_csv.resources is defined
+    - r_gatekeeper_csv.resources[0] is defined
+    - r_gatekeeper_csv.resources[0].status is defined
+    - r_gatekeeper_csv.resources[0].status.phase is defined
+    - r_gatekeeper_csv.resources[0].status.phase == "Succeeded"
+  retries: 20
+  delay: 10

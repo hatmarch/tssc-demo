@@ -6,5 +6,6 @@
 - name: Build Rekor CLI
   include_tasks: build_rekor_cli.yaml
 
-
+- name: Install OPA Gatekeeper
+  include_tasks: install_opa_gatekeeper.yaml
     
