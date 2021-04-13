@@ -3,7 +3,8 @@
   set_fact:
       operators_project: 'openshift-operators'
       operators: 
-        - gatekeeper-operator-product
+        - { name: "gatekeeper-operator-product", namespace: openshift-operators }
+        - { name: "{{ ploigos_operator_name }}", namespace: "{{ ploigos_namespace }}" }
 
 # The schema of registered vars in loops is described 
 # here: https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html#registering-variables-with-a-loop 
@@ -11,10 +12,14 @@
   k8s_info:
     kind: Subscription
     api_version: operators.coreos.com/v1alpha1
-    namespace: '{{ operators_project }}'
-    name: "{{ item }}"
+    namespace: "{{ item.namespace }}"
+    name: "{{ item.name }}"
   register: sub_info
   loop: "{{ operators }}"
+
+- name: Debug sub_info
+  debug:
+    msg: "Got sub_info of {{ sub_info }}"
 
 - name: Flatten Found Subscription Dictionary
   set_fact:

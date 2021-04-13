@@ -2,9 +2,21 @@
 - name: Create Rekor 
   include_tasks: provision_rekor.yaml
 
-- name: Create Ploigos Factory
-  include_tasks: provision_ploigos_platform.yaml
+- name: Create Ploigos Platform
+  include_tasks: provision_ploigos_platform_helm.yaml
+  when:
+    - ploigos_platform_full_install is defined
+    - ploigos_platform_full_install | bool 
+
+- name: Install Ploigos Platform Support
+  include_tasks: provision_ploigos_platform_support.yaml
+  when:
+    - (ploigos_platform_full_install is not defined) or not (ploigos_platform_full_install | bool) 
+
 
 - name: Create Ploigos Pipeline
   include_tasks: provision_ploigos_pipeline.yaml
+  when:
+    - ploigos_platform_full_install is defined
+    - ploigos_platform_full_install
 

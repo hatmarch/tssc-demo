@@ -7,6 +7,7 @@
     - name: Set CSV
       set_fact:
         current_csv: "{{ subscription.status.currentCSV }}"
+        current_namespace: "{{ subscription.metadata.namespace }}"
 
     - name: Delete Subscription
       k8s:
@@ -14,12 +15,12 @@
         api_version: operators.coreos.com/v1alpha1
         kind: Subscription
         name: "{{ subscription.metadata.name }}"
-        namespace: '{{ operators_project }}'
+        namespace: "{{ current_namespace }}"
 
     - name: Delete ClusterServiceVersion
       k8s:
         state: absent
         api_version: operators.coreos.com/v1alpha1
         kind: ClusterServiceVersion
-        name: '{{ current_csv }}'
-        namespace: '{{ operators_project }}'
+        name: "{{ current_csv }}"
+        namespace: "{{ current_namespace }}"

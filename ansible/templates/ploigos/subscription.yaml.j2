@@ -1,0 +1,26 @@
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/{{ ploigos_operator_name }}.{{ ploigos_namespace }}: ""
+  name: {{ ploigos_operator_name }}
+  namespace: {{ ploigos_namespace }}
+spec:
+  channel: {{ ploigos_operator_channel }}
+  installPlanApproval: Automatic
+  name: {{ ploigos_operator_name }}
+  source: redhatgov-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: "{{ ploigos_operator_name }}.v{{ ploigos_operator_version }}"
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  annotations:
+    olm.providedAPIs: ""
+  name: "{{ ploigos_operator_name }}-operatorgroup"
+  namespace: {{ ploigos_namespace }}
+spec:
+  targetNamespaces:
+  - {{ ploigos_namespace }}
