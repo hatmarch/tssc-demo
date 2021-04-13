@@ -1,4 +1,8 @@
-# NOTE: This gets called from an outer loop in remove_operators.yaml
+---
+- name: Debug Print Subscription
+  debug:
+    msg: "Subscription is {{ subscription }}"
+
 - name: Uninstall Operator
   block:
     - name: Print CSV

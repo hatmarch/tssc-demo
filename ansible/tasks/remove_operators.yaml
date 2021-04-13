@@ -1,7 +1,6 @@
 ---
 - name: vars
   set_fact:
-      operators_project: 'openshift-operators'
       operators: 
         - { name: "gatekeeper-operator-product", namespace: openshift-operators }
         - { name: "{{ ploigos_operator_name }}", namespace: "{{ ploigos_namespace }}" }
@@ -31,7 +30,8 @@
   loop: "{{ subscriptions }}"
 
 - name: Remove Operators
-  include_tasks: remove_operator.yaml
+  include_role:
+    name: remove_operator
+  vars:
+    subscription: "{{ item }}"
   loop: "{{ subscriptions }}"
-  loop_control:
-    loop_var: subscription
