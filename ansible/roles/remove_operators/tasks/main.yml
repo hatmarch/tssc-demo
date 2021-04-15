@@ -1,10 +1,4 @@
 ---
-- name: vars
-  set_fact:
-      operators: 
-        - { name: "gatekeeper-operator-product", namespace: openshift-operators }
-        - { name: "{{ ploigos_operator_name }}", namespace: "{{ ploigos_namespace }}" }
-
 # The schema of registered vars in loops is described 
 # here: https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html#registering-variables-with-a-loop 
 - name: Get Subs
@@ -30,8 +24,7 @@
   loop: "{{ subscriptions }}"
 
 - name: Remove Operators
-  include_role:
-    name: remove_operator
+  include_tasks: ./remove_operator.yml
   vars:
     subscription: "{{ item }}"
   loop: "{{ subscriptions }}"

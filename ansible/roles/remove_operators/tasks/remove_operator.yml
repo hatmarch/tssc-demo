@@ -28,3 +28,4 @@
         kind: ClusterServiceVersion
         name: "{{ current_csv }}"
         namespace: "{{ current_namespace }}"
+        wait: true

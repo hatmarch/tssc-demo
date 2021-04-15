@@ -1,0 +1,10 @@
+# Tasks for Installing and uninstalling ploigos platform from a cluster
+- name: Install Ploigos Platform
+  include_tasks:
+    file: ./install.yml
+  when: not (ploigos_cleanup | bool)
+
+- name: Remove Ploigos Platform
+  include_tasks:
+    file: ./uninstall.yml
+  when: ploigos_cleanup | bool 

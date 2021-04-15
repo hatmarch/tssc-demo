@@ -1,0 +1,54 @@
+- name: Find all Ploigos Pipelines
+  k8s_info:
+    api_version: redhatgov.io/v1alpha1
+    kind: TsscPipeline
+    namespace: "{{ ploigos_namespace }}"
+  register: r_pipelines
+
+- name: Remove All Ploigos Pipelines
+  k8s:
+    state: absent
+    api_version: redhatgov.io/v1alpha1
+    kind: TsscPipeline
+    namespace: "{{ item.metadata.namespace }}"
+    wait: true
+    wait_timeout: 120
+    name: "{{ item.metadata.name }}"
+  loop: "{{ r_pipelines.resources }}"
+
+- name: Find all Ploigos Platforms
+  k8s_info:
+    api_version: redhatgov.io/v1alpha1
+    kind: TsscPlatform
+    namespace: "{{ ploigos_namespace }}"
+  register: r_platforms
+
+- name: Debug Platforms
+  debug:
+    msg: "Platforms is {{ r_platforms }}"
+
+- name: Remove (All) Ploigos Platforms
+  k8s: 
+    state: absent
+    api_version: redhatgov.io/v1alpha1
+    kind: TsscPlatform
+    namespace: "{{ item.metadata.namespace }}"
+    name: "{{ item.metadata.name }}"
+    wait: true
+    wait_timeout: 120
+  loop: "{{ r_platforms.resources }}"
+
+- name: Remove Plogios Operators
+  include_role:
+    name: remove_operators
+  vars:
+    operators:
+      - { name: "{{ ploigos_operator_name }}", namespace: "{{ ploigos_namespace }}" }
+  when: (remove_operators == "true" ) 
+
+- name: Remove Ploigos Namespace
+  k8s:
+    state: absent
+    kind: Namespace
+    name: "{{ ploigos_namespace }}"
+    wait: true

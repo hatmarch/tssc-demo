@@ -1,6 +1,19 @@
 - name: Remove Operators
-  include_tasks: remove_operators.yaml
+  include_role:
+    name: remove_operators
+  vars:
+    operators:
+      - { name: "gatekeeper-operator-product", namespace: openshift-operators }
   when: (remove_operators == "true" ) 
+
+- name: Remove Ploigos Platform Support
+  include_role: 
+    name: ploigos_support
+  vars:
+    ploigos_cleanup: true
+  when:
+    - (ploigos_platform_full_install is not defined) or not (ploigos_platform_full_install | bool) 
+
 
 # - name: Delete demo projects
 #   k8s:

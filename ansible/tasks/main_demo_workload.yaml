@@ -9,10 +9,13 @@
     - ploigos_platform_full_install | bool 
 
 - name: Install Ploigos Platform Support
-  include_tasks: provision_ploigos_platform_support.yaml
+  include_role: 
+    name: ploigos_support
+  vars:
+    ploigos_cleanup: false
+    test_var: "foo"
   when:
     - (ploigos_platform_full_install is not defined) or not (ploigos_platform_full_install | bool) 
-
 
 - name: Create Ploigos Pipeline
   include_tasks: provision_ploigos_pipeline.yaml
