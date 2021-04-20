@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: log-signer
-          image: gcr.io/trillian-opensource-ci/log_signer
+          image: gcr.io/trillian-opensource-ci/log_signer:5e12fb368c8fd19e10aeb5a5cf785107f8069c08
           args:
             - '--storage_system=mysql'
             - '--mysql_uri=test:zaphod@tcp(trillian-db:3306)/test'
@@ -29,6 +29,11 @@ spec:
             - '--http_endpoint=0.0.0.0:8091'
             - '--force_master'
             - '--alsologtostderr'
+          ports:
+            - containerPort: 8090
+              protocol: TCP
+            - containerPort: 8091
+              protocol: TCP
           resources:
             requests:
               cpu: 500m

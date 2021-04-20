@@ -40,11 +40,13 @@ spec:
             - --rpc_endpoint=0.0.0.0:8091
             - --http_endpoint=0.0.0.0:8090
             - --alsologtostderr
-          image: gcr.io/trillian-opensource-ci/log_server@sha256:6edd7dc1873c1444aa2d9be91fc989f1a8bb1cabef9776922ac715e144ff247a
+          image: gcr.io/trillian-opensource-ci/log_server:5e12fb368c8fd19e10aeb5a5cf785107f8069c08
           imagePullPolicy: Always
           name: trillian-log
           ports:
             - containerPort: 8090
+              protocol: TCP
+            - containerPort: 8091
               protocol: TCP
           resources:
             requests:

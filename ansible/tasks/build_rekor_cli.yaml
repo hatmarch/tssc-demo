@@ -18,8 +18,8 @@
     set -euo pipefail
     mkdir -p $DEMO_HOME/bin
     cd $DEMO_HOME/rekor
-    go build ./cmd/cli
-    mv cli ${DEMO_HOME}/bin/rekor
+    go build ./cmd/rekor-cli
+    mv rekor-cli ${DEMO_HOME}/bin/rekor
     chmod +x ${DEMO_HOME}/bin/rekor
   register: build_commands
   failed_when: build_commands.rc != 0

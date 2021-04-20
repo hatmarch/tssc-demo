@@ -16,6 +16,10 @@ spec:
       port: 8091
       protocol: TCP
       targetPort: 8091
+    - name: 8090-tcp
+      port: 8090
+      protocol: TCP
+      targetPort: 8090
   selector:
     app: trillian-log
     deploymentconfig: trillian-log
