@@ -44,10 +44,16 @@
             "type": "go",
             "request": "attach",
             "mode": "remote",
-            "remotePath": "/opt/app-root/src/cmd/server/main.go",
             "port": 30123,
             "host": "localhost",
             "showLog": true,
+            "apiVersion": 2,
+            "substitutePath": [
+                {
+                    "to": "/opt/app-root/src/",
+                    "from": "/workspaces/tssc-demo/rekor/"
+                }
+            ]
         },
         {
             "name": "Debug delve",
