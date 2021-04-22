@@ -5,4 +5,4 @@ ploigos_operator_version: "0.3.1"
 ploigos_operator_channel: "alpha"
 ploigos_cleanup: false
 ploigos_wait: false
-plogios_install: true
+ploigos_install: true
