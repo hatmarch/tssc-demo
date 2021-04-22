@@ -103,7 +103,11 @@ If you need to customize the openSCAP checks against your repo, then **you must 
 [.console-input]
 [source,bash,subs="+macros,+attributes"]
 ----
-oc apply -f pass:[${DEMO_HOME}]/ansible/roles/ploigos_support/templates/platform-config-no-oscap.yaml
+oc create configmap ploigos-platform-config \
+    --from-file=config.yml=<(oc get cm/ploigos-platform-config -n devsecops -o jsonpath='{.data.config\.yml}' \
+             | yq - d 'step-runner-config.container-image-static-compliance-scan' \
+             | yq - d 'step-runner-config.container-image-static-vulnerability-scan') \
+    --dry-run=client -o yaml | oc replace -n devsecops -f -
 ----
 +
 . Ensure that the project that you intend to build has configuration information for the (parallel) openSCAP steps.  For example:
