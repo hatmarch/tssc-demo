@@ -1,0 +1,15 @@
+- name: Wait for Platform to finish
+  k8s_info:
+    kind: TsscPlatform
+    name: tsscplatform-jenkins
+    namespace: '{{ ploigos_namespace }}'
+    api_version: redhatgov.io/v1alpha1
+  register: r_k8s_info
+  until: (r_k8s_info.resources[0].status.conditions[0].reason | default(0) == "Successful")
+    and (r_k8s_info.resources[0].status.conditions[0].status | default(0) == "True")
+  retries: 20
+  delay: 2
+
+- name: Announce Platform finished
+  debug:
+    msg: "Platform has been successfully installed"

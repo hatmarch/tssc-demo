@@ -2,7 +2,12 @@
 - name: Install Ploigos Platform
   include_tasks:
     file: ./install.yml
-  when: not (ploigos_cleanup | bool)
+  when: ploigos_install | bool
+
+- name: Wait for Ploigos Platform
+  include_tasks:
+    file: ./wait.yml
+  when: ploigos_wait | bool
 
 - name: Remove Ploigos Platform
   include_tasks:
