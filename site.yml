@@ -2,7 +2,7 @@ runtime:
   cache_dir: ./.cache/antora
 
 site:
-  title: Trusted Software Supply Chain Demo 
+  title: Secure Software Factory Demo 
   url: https://hatmarch.github.io/tssc-demo
   start_page: tssc-demo::index.adoc
 
@@ -14,7 +14,7 @@ content:
 
 asciidoc:
   attributes:
-    title: Trusted Software Supply Chain Demo
+    title: Secure Software Factory Demo 
     release-version: master
     page-pagination: true
     git_repo: https://github.com/hatmarch/tssc-demo

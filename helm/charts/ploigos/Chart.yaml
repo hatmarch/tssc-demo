@@ -1,6 +1,6 @@
 apiVersion: v2
 name: ploigos
-description: A Helm chart for Ploigos - Trusted Software Supply Chain
+description: A Helm chart for Ploigos - Software Factory
 type: application
 version: 0.0.6
 appVersion: 0.3.0

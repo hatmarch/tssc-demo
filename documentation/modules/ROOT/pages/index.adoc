@@ -1,4 +1,4 @@
-= Trusted Software Supply Chain Demo
+= Secure Software Factory Demo
 :page-layout: home
 :!sectids:
 
@@ -20,6 +20,6 @@ It makes use of the following components:
 
 [.tile]
 .xref:walkthrough.adoc[Walkthrough]
-* xref:walkthrough.adoc#platform[Trusted Software Supply Chain Platform]
+* xref:walkthrough.adoc#platform[Secure Software Factory Platform]
 * xref:walkthrough.adoc#pipeline[Create and Examine Pipeline]
 * xref:walkthrough.adoc#rekor[Review Rekor Logs]

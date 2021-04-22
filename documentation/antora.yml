@@ -1,5 +1,5 @@
 name: tssc-demo
-title: Trusted Software Supply Chain Demo
+title: Secure Software Factory Demo
 version: master
 nav:
   - modules/ROOT/nav.adoc

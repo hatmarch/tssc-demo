@@ -1,5 +1,5 @@
 {
-	"name": "Trusted Software Supply Chain Demo",
+	"name": "Secure Software Factory Demo",
 	"dockerFile": "Dockerfile",
 	"build": {
 		"args": {

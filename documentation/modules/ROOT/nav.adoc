@@ -2,6 +2,6 @@
 ** xref:01-setup.adoc#prerequisite[Prerequisites]
 
 * xref:walkthrough.adoc[Walkthrough]
-** xref:walkthrough.adoc#platform[Trusted Software Supply Chain Platform]
+** xref:walkthrough.adoc#platform[Secure Software Factory Platform]
 ** xref:walkthrough.adoc#pipeline[Create and Examine Pipeline]
 ** xref:walkthrough.adoc#rekor[Review Rekor Logs]
