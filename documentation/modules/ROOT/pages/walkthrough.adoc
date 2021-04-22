@@ -10,6 +10,24 @@ _Coming Soon_
 == Create and Examine (Jenkins) Pipeline
 
 . Log into the openshift console and go to the `devsecops` project in Developer Perspective
++
+[IMPORTANT]
+====
+If you need to customize the openSCAP checks against your repo, then **you must first do the following** before proceeding with the walkthrough:
+
+. Update the default platform pipeline configuration to entirely rely on the config from the built project:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc apply -f pass:[${DEMO_HOME}]/ansible/roles/ploigos_support/templates/platform-config-no-oscap.yaml
+----
++
+. Ensure that the project that you intend to build has configuration information for the (parallel) openSCAP steps.  For example:
++
+image::app-config-openscap.png[]
+====
++
 . Zoom out to show the whole of the platform
 +
 image::platform-dev-view.png[]

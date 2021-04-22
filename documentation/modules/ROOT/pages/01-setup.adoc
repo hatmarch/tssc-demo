@@ -10,20 +10,16 @@ include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-c
 include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/optional-requisites.adoc[]
 |===
 
-[#minikube]
-== Setup Kubernetes
+[#demo-setup]
+== Demo Setup
 
-:profile: my_profile
+Starting from an OpenShift 4.6 cluster, you can setup the demo by running the following command:
 
-include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/kubernetes-setup.adoc[]
+[.console-input]
+[source,bash]
+----
+$DEMO_HOME/scripts/create_demo.sh -i
+----
 
-And then you are ready for start using Kubernetes:
-
-image::kubelogo.png[]
-
-[#downloadtutorial]
-== Get tutorial sources
-
-:tutorial-url: https://github.com/redhat-developer-demos/rhd-tutorial-common.git
-:folder: my_folder
-include::https://raw.githubusercontent.com/redhat-developer-demos/rhd-tutorial-common/master/download-sources.adoc[]
+[#appendix]
+== Appendix
