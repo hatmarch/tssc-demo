@@ -7,7 +7,7 @@
   register: r_k8s_info
   until: (r_k8s_info.resources[0].status.conditions[0].reason | default(0) == "Successful")
     and (r_k8s_info.resources[0].status.conditions[0].status | default(0) == "True")
-  retries: 40
+  retries: 80
   delay: 3
 
 - name: Announce Platform finished
