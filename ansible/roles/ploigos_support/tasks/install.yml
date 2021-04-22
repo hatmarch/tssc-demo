@@ -1,10 +1,6 @@
 ---
 # tasks file for ploigos_support
 - block:
-  - name: Debug Platform Support
-    debug:
-      msg: "In the platform support role with testvar: {{test_var}}"
-
   - name: Create namespace for ploigos
     k8s:
       state: present

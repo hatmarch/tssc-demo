@@ -13,7 +13,6 @@
     name: ploigos_support
   vars:
     ploigos_cleanup: false
-    test_var: "foo"
   when:
     - (ploigos_platform_full_install is not defined) or not (ploigos_platform_full_install | bool) 
 
