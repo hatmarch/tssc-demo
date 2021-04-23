@@ -1,0 +1,90 @@
+= Secure Software Factory Platform
+include::_attributes.adoc[]
+
+[#platform]
+== Secure Software Factory Platform
+
+. Log into the OpenShift platform with a cluster admin and open two tabs (or windows):
++
+[tabs]
+====
+Admin Perspective::
++
+--
+Open the *Admin Perspective* of the dashboard (possibly initialized to the `devsecops` project):
+
+image::initial-admin-view.png[]
+
+--
+Developer Perspective (Topology View)::
++
+--
+[#topologyview]
+Open the *Topology View* of the `devsecops` project, as seen here:
+
+image::initial-topology-view.png[]
+
+--
+====
++
+. Switch to the `devsecops` project and click on OperatorHub
+. Scroll down to provider type and check `Red Hat NAPS Community Operators`.  Type `software factory` to attract focus on the Ploigos operator
+** Explain that OpenShift allows administers to subscribe to different channels (even their own trusted internal channels) for available operators
+** This represents Red Hat consulting's catalog of trusted operators
++
+image::operator-catalog.png[]
++
+. Next let's take a look at the (pre) installed Software Factory Operator in more detail.  Click on the `Installed Operators` button in the left navbar.  Click on the Ploigos Software Factory Operator
++
+image::installed-operators.png[]
++
+. Scroll through the Operator Details page and double check that the operator is successfully installed.  
+. Point out the two different CustomResources that the operator watches for, namely the `TsscPipeline` and `TsscPlatform` CRs.  
+. Select the `TsscPlatform` CR to create the platform for our secure software factory.  Click the `Create TsscPlatform` button
++
+image::tsscplatform.png[]
++
+. Switch to the YAML view and briefly show the different configuration options for the platform and then click `Create`
++
+image::tsscplatform-detail.png[]
++
+. As soon as you hit create, switch to the second tab/window <<topologyview,*Developer Perspective (Topology View)*>>
++
+. Zoom out to show the operator doing its work to create the items in the platform.  Here's what it looks like in the middle of its run:
++
+image::operator-buildout.png[]
++
+. Wait for the platform to be built out
++
+[NOTE]
+.Determining when the platform is completed
+====
+You can determine when the operator has completed successfully by running the following command in a hidden terminal:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+(cd pass:[${DEMO_HOME}]/ansible; ansible localhost -m include_role -a name=ploigos_support -e ploigos_wait=true -e ploigos_install=false)
+----
+
+If it completes successfully you should see something like this:
+[.console-output]
+[source,bash]
+----
+localhost | SUCCESS => {
+    "msg": "Platform has been successfully installed"
+}
+----
+====
++
+. When the platform has finished, refit the Topology View if you haven't already and zoom out to survey the different aspects of the platform
++
+image::dev-perspective-controls.png[]
++
+. When the platform has finished, return to the operator <<topologyview,*Admin Perspective*>> and show that the platform has indicated successful installation
++
+image::tsscplatform-successful.png[]
++
+. OPTIONAL: Click into the yaml view of the admin perspective and compare it to the topology view as indicated below:
++
+image::platform-compare.png[]

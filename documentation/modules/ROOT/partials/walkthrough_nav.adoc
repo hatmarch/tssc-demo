@@ -1,0 +1,5 @@
+* xref:walkthrough.adoc[Walkthrough]
+** xref:platform.adoc#platform[Secure Software Factory Platform]
+** xref:pipeline.adoc#pipeline[Create and Examine Pipeline]
+** xref:audit.adoc#audit[Digital Attestation and Auditing with Rekor]
+** xref:enforce.adoc#enforce[Policy Enforcement with Open Policy Agent]

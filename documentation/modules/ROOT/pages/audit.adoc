@@ -1,0 +1,9 @@
+= Digital Attestation and Auditing with Rekor
+include::_attributes.adoc[]
+
+[#audit]
+== Digital Attestation and Auditing with Rekor
+
+In this section we look at what was logged to Rekor and how it relates to the Jenkins pipeline build from the previous section
+
+_Coming Soon_

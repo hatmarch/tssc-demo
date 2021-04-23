@@ -19,7 +19,4 @@ It makes use of the following components:
 .xref:01-setup.adoc[Demo Setup]
 
 [.tile]
-.xref:walkthrough.adoc[Walkthrough]
-* xref:walkthrough.adoc#platform[Secure Software Factory Platform]
-* xref:walkthrough.adoc#pipeline[Create and Examine Pipeline]
-* xref:walkthrough.adoc#rekor[Review Rekor Logs]
+include::ROOT:partial$walkthrough_nav.adoc[]

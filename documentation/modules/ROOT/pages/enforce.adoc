@@ -1,0 +1,9 @@
+= Policy Enforcement with Open Policy Agent
+include::_attributes.adoc[]
+
+[#enforce]
+== Policy Enforcement with Open Policy Agent
+
+In this section we look how the Open Policy Agent Gatekeeper can allow us to enforce the use of only images with trusted provenance to run in certain situations in the cluster
+
+_Coming Soon_
