@@ -3,9 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Trusted Software Supply Chain Demo :: Trusted Software Supply Chain Demo</title>
+    <title>Secure Software Factory Demo :: Secure Software Factory Demo</title>
     <link rel="canonical" href="https://hatmarch.github.io/tssc-demo/tssc-demo/walkthrough.html">
-    <link rel="prev" href="01-setup.html">
+    <link rel="prev" href="appendix.html#appendix">
+    <link rel="next" href="platform.html#platform">
     <meta name="generator" content="Antora 2.3.4">
     <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
@@ -17,7 +18,7 @@
     <div class="navbar-brand">
       <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img
           src="../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
-      <a class="navbar-item" href="https://hatmarch.github.io/tssc-demo">Trusted Software Supply Chain Demo</a>
+      <a class="navbar-item" href="https://hatmarch.github.io/tssc-demo">Secure Software Factory Demo</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
         <span></span>
@@ -66,16 +67,19 @@
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html">Trusted Software Supply Chain Demo</a></h3>
+    <h3 class="title"><a href="index.html">Secure Software Factory Demo</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="01-setup.html">Demo Setup</a>
+    <a class="nav-link" href="setup.html">Demo Setup</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="01-setup.html#prerequisite">Prerequisites</a>
+    <a class="nav-link" href="setup.html#prerequisite">Prerequisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="appendix.html#appendix">Appendix</a>
   </li>
 </ul>
   </li>
@@ -84,13 +88,16 @@
     <a class="nav-link" href="walkthrough.html">Walkthrough</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#platform">Trusted Software Supply Chain Platform</a>
+    <a class="nav-link" href="platform.html#platform">Secure Software Factory Platform</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#pipeline">Create and Examine Pipeline</a>
+    <a class="nav-link" href="pipeline.html#pipeline">Create and Examine Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#rekor">Review Rekor Logs</a>
+    <a class="nav-link" href="audit.html#audit">Digital Attestation and Auditing with Rekor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="enforce.html#enforce">Policy Enforcement with Open Policy Agent</a>
   </li>
 </ul>
   </li>
@@ -101,12 +108,12 @@
 </div>
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
-    <span class="title">Trusted Software Supply Chain Demo</span>
+    <span class="title">Secure Software Factory Demo</span>
     <span class="version">master</span>
   </div>
   <ul class="components">
     <li class="component is-current">
-      <span class="title">Trusted Software Supply Chain Demo</span>
+      <span class="title">Secure Software Factory Demo</span>
       <ul class="versions">
         <li class="version is-current is-latest">
           <a href="index.html">master</a>
@@ -124,7 +131,7 @@
   <a href="index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="index.html">Trusted Software Supply Chain Demo</a></li>
+    <li><a href="index.html">Secure Software Factory Demo</a></li>
     <li><a href="walkthrough.html">Walkthrough</a></li>
   </ul>
 </nav>
@@ -132,107 +139,11 @@
 </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Trusted Software Supply Chain Demo</h1>
-<div class="sect1">
-<h2 id="platform"><a class="anchor" href="#platform"></a>Trusted Software Supply Chain Platform</h2>
+<h1 class="page">Secure Software Factory Demo</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>Coming Soon</em></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="pipeline"><a class="anchor" href="#pipeline"></a>Create and Examine (Jenkins) Pipeline</h2>
-<div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Log into the openshift console and go to the <code>devsecops</code> project in Developer Perspective</p>
-</li>
-<li>
-<p>Zoom out to show the whole of the platform</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/platform-dev-view.png" alt="platform dev view">
-</div>
-</div>
-</li>
-<li>
-<p>Click on <code>Search</code> and look for tsscpipeline</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/search-tssc.png" alt="search tssc">
-</div>
-</div>
-</li>
-<li>
-<p>Click Create TsscPipeline</p>
-</li>
-<li>
-<p>Fill in the pipeline with the contents of this</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">apiVersion: redhatgov.io/v1alpha1
-kind: TsscPipeline
-metadata:
-  name: tsscpipeline-jenkins
-spec:
-  appName: reference-app
-  appRepo:
-    destinationRepoName: reference-app-code
-    sourceUrl: 'https://github.com/hatmarch/ploigos-reference-app.git'
-  autoStartPipeline: true
-  helmRepo:
-    destinationRepoName: reference-helm-gitops
-    sourceUrl: 'https://github.com/hatmarch/ploigos-reference-helm.git'
-  serviceName: reference-app-fruit</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Click <code>Create</code> which will create the custom resource and the operator will begin setup</p>
-</li>
-<li>
-<p>Once the <code>TsscPipeline</code> resource is ready, then return to DevPerspective and search for Jenkins in the (zoomed out) devconsole</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/search-jenkins.png" alt="search jenkins">
-</div>
-</div>
-</li>
-<li>
-<p>Click the route badge on the Jenkins instance to open the Jenkins master</p>
-</li>
-<li>
-<p>Login using your OpenShift Credentials</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/openshift-oauth-jenkins.png" alt="openshift oauth jenkins">
-</div>
-</div>
-</li>
-<li>
-<p>Once in the Jenkins console, click on Open Blue Ocean</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/jenkins-blue-ocean.png" alt="jenkins blue ocean">
-</div>
-</div>
-</li>
-<li>
-<p>Select the pipeline (it should be in progress) and show the pipeline view of the running instance</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/jenkins-running-pipeline.png" alt="jenkins running pipeline">
-</div>
-</div>
-</li>
-<li>
-<p>Let&#8217;s show how our reference app interacted with this pipeline by opening the <code>Jenkinsfile</code> of the  reference app by using this link:</p>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "http://$(oc get route gitea -n devsecops -o jsonpath='{.spec.host}')/platform/reference-app-code/src/branch/main/cicd/Jenkinsfile"</code></pre>
-</div>
+<p>The demonstration of the Secure Software Factory covers the aspects below.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -242,94 +153,45 @@ spec:
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The login details for the internal git repo are</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">#USER
-oc get secret gitea-admin-credentials -o jsonpath='{.data.username}' -n devsecops | base64 -d
-echo ""
-#PASSWORD
-oc get secret gitea-admin-credentials -o jsonpath='{.data.password}' -n devsecops | base64 -d</code></pre>
-</div>
+<p>For information about how to setup a cluster to be able to demonstrate these walkthroughs, see <a href="#01-setup.adoc" class="page unresolved">Demo Setup</a></p>
 </div>
 </td>
 </tr>
 </table>
 </div>
-</li>
-<li>
-<p>You should see something like the example below.  Make sure you draw a mapping between the stages of the Blue Ocean Pipeline and what&#8217;s in this Jenkinsfile</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/Jenkinsfile.png" alt="Jenkinsfile">
-</div>
-</div>
-</li>
-<li>
-<p>Next show the config.yaml</p>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "http://$(oc get route gitea -n devsecops -o jsonpath='{.spec.host}')/platform/reference-app-code/src/branch/main/cicd/ploigos-step-runner-config/config.yml"</code></pre>
-</div>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="_images/config-yaml.png" alt="config yaml">
-</div>
-<div class="title">Figure 1. Notice rekor-server-url config for RekorLog substep</div>
-</div>
-</li>
-<li>
-<p>Show that the Rekor server for this demo is running in cluster by switching to the tssc-demo-rekor and looking at the topology view</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/rekor-topology.png" alt="rekor topology">
-</div>
-<div class="title">Figure 2. RekorLog is also publicly accessible</div>
-</div>
-</li>
-<li>
-<p>Open up the log view on the rekor server and show that entries were logged</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/rekor-log-log.png" alt="rekor log log">
-</div>
-<div class="title">Figure 3. Two entries in RekorLog made by build chain</div>
-</div>
-<div class="paragraph">
-<p><span class="image right"><img src="_images/sign-image-stage.png" alt="sign image stage" width="200"></span></p>
-</div>
-</li>
-<li>
-<p>Return to the Jenkins Blue Ocean tab and look at the logs for the <code>CI: Sign Trusted Container Image</code> stage</p>
-</li>
-<li>
-<p>Scroll down to the bottom of the logs and show the two rekor log events</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/rekorlog-jenkins-log.png" alt="rekorlog jenkins log">
-</div>
-<div class="title">Figure 4. Two log events</div>
-</div>
-</li>
-</ol>
-</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="rekor"><a class="anchor" href="#rekor"></a>Review Rekor Logs</h2>
+<h2 id="_walkthrough_demos"><a class="anchor" href="#_walkthrough_demos"></a>Walkthrough Demos</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>In this section we look at what was logged to Rekor and how it relates to the Jenkins pipeline build from the previous section</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#">Walkthrough</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="platform.html#platform" class="page">Secure Software Factory Platform</a></p>
+</li>
+<li>
+<p><a href="pipeline.html#pipeline" class="page">Create and Examine Pipeline</a></p>
+</li>
+<li>
+<p><a href="audit.html#audit" class="page">Digital Attestation and Auditing with Rekor</a></p>
+</li>
+<li>
+<p><a href="enforce.html#enforce" class="page">Policy Enforcement with Open Policy Agent</a></p>
+</li>
+</ul>
 </div>
-<div class="paragraph">
-<p><em>Coming Soon</em></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="01-setup.html" class="query-params-link">Demo Setup</a></span>
+  <span class="prev"><a href="appendix.html#appendix" class="query-params-link">Appendix</a></span>
+  <span class="next"><a href="platform.html#platform" class="query-params-link">Secure Software Factory Platform</a></span>
 </nav>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">

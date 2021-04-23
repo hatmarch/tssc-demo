@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Secure Software Factory Demo :: Secure Software Factory Demo</title>
+    <link rel="canonical" href="https://hatmarch.github.io/tssc-demo/tssc-demo/pipeline.html">
+    <link rel="prev" href="platform.html#platform">
+    <link rel="next" href="audit.html#audit">
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../_/css/site.css">
+<link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img
+          src="../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" href="https://hatmarch.github.io/tssc-demo">Secure Software Factory Demo</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Books</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">CheatSheets</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">CheatSheet A</a>
+            <a class="navbar-item" href="#">CheatSheet B</a>
+            <a class="navbar-item" href="#">CheatSheet C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Upcoming Events</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Event A</a>
+            <a class="navbar-item" href="#">Event B</a>
+            <a class="navbar-item" href="#">Event C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Tutorial A</a>
+            <a class="navbar-item" href="#">Tutorial B</a>
+            <a class="navbar-item" href="#">Tutorial C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="tssc-demo" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html">Secure Software Factory Demo</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="setup.html">Demo Setup</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="setup.html#prerequisite">Prerequisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="appendix.html#appendix">Appendix</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="walkthrough.html">Walkthrough</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="platform.html#platform">Secure Software Factory Platform</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#pipeline">Create and Examine Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="audit.html#audit">Digital Attestation and Auditing with Rekor</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="enforce.html#enforce">Policy Enforcement with Open Policy Agent</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Secure Software Factory Demo</span>
+    <span class="version">master</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Secure Software Factory Demo</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Secure Software Factory Demo</a></li>
+    <li><a href="walkthrough.html">Walkthrough</a></li>
+    <li><a href="#pipeline">Create and Examine Pipeline</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="file:///workspaces/tssc-demo/documentation/modules/ROOT/pages/pipeline.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Secure Software Factory Demo</h1>
+<div class="sect1">
+<h2 id="pipeline"><a class="anchor" href="#pipeline"></a>Create and Examine (Jenkins) Pipeline</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log into the openshift console and go to the <code>devsecops</code> project in Developer Perspective</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you need to customize the openSCAP checks against your repo, then <strong>you must first do the following</strong> before proceeding with the walkthrough:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Update the default platform pipeline configuration to entirely rely on the config from the built project:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc create configmap ploigos-platform-config \
+    --from-file=config.yml=&lt;(oc get cm/ploigos-platform-config -n devsecops -o jsonpath='{.data.config\.yml}' \
+             | yq - d 'step-runner-config.container-image-static-compliance-scan' \
+             | yq - d 'step-runner-config.container-image-static-vulnerability-scan') \
+    --dry-run=client -o yaml | oc replace -n devsecops -f -</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Ensure that the project that you intend to build has configuration information for the (parallel) openSCAP steps.  For example:</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/app-config-openscap.png" alt="app config openscap">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Zoom out to show the whole of the platform</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/platform-dev-view.png" alt="platform dev view">
+</div>
+</div>
+</li>
+<li>
+<p>Click on <code>Search</code> and look for tsscpipeline</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/search-tssc.png" alt="search tssc">
+</div>
+</div>
+</li>
+<li>
+<p>Click Create TsscPipeline</p>
+</li>
+<li>
+<p>Fill in the pipeline with the contents of this</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: redhatgov.io/v1alpha1
+kind: TsscPipeline
+metadata:
+  name: tsscpipeline-jenkins
+spec:
+  appName: reference-app
+  appRepo:
+    destinationRepoName: 'reference-app-code'
+    sourceUrl: 'https://github.com/hatmarch/ploigos-reference-app.git'
+  autoStartPipeline: true
+  helmRepo:
+    destinationRepoName: demo-app-helm
+    sourceUrl: 'https://github.com/hatmarch/ploigos-reference-helm.git'
+  serviceName: reference-app-fruit</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Click <code>Create</code> which will create the custom resource and the operator will begin setup</p>
+</li>
+<li>
+<p>Once the <code>TsscPipeline</code> resource is ready, then return to DevPerspective and search for Jenkins in the (zoomed out) devconsole</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/search-jenkins.png" alt="search jenkins">
+</div>
+</div>
+</li>
+<li>
+<p>Click the route badge on the Jenkins instance to open the Jenkins master</p>
+</li>
+<li>
+<p>Login using your OpenShift Credentials</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/openshift-oauth-jenkins.png" alt="openshift oauth jenkins">
+</div>
+</div>
+</li>
+<li>
+<p>Once in the Jenkins console, click on Open Blue Ocean</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/jenkins-blue-ocean.png" alt="jenkins blue ocean">
+</div>
+</div>
+</li>
+<li>
+<p>Select the pipeline (it should be in progress) and show the pipeline view of the running instance</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/jenkins-running-pipeline.png" alt="jenkins running pipeline">
+</div>
+</div>
+</li>
+<li>
+<p>Let&#8217;s show how our reference app interacted with this pipeline by opening the <code>Jenkinsfile</code> of the  reference app by using this link:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "http://$(oc get route gitea -n devsecops -o jsonpath='{.spec.host}')/platform/'reference-app-code'/src/branch/main/cicd/Jenkinsfile"</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The login details for the internal git repo are</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">#USER
+oc get secret gitea-admin-credentials -o jsonpath='{.data.username}' -n devsecops | base64 -d
+echo ""
+#PASSWORD
+oc get secret gitea-admin-credentials -o jsonpath='{.data.password}' -n devsecops | base64 -d</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>You should see something like the example below.  Make sure you draw a mapping between the stages of the Blue Ocean Pipeline and what&#8217;s in this Jenkinsfile</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/Jenkinsfile.png" alt="Jenkinsfile">
+</div>
+</div>
+</li>
+<li>
+<p>Next show the config.yaml</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "http://$(oc get route gitea -n devsecops -o jsonpath='{.spec.host}')/platform/'reference-app-code'/src/branch/main/cicd/ploigos-step-runner-config/config.yml"</code></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/config-yaml.png" alt="config yaml">
+</div>
+<div class="title">Figure 1. Notice rekor-server-url config for RekorLog substep</div>
+</div>
+</li>
+<li>
+<p>Show that the Rekor server for this demo is running in cluster by switching to the 'tssc-demo-rekor' and looking at the topology view</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rekor-topology.png" alt="rekor topology">
+</div>
+<div class="title">Figure 2. RekorLog is also publicly accessible</div>
+</div>
+</li>
+<li>
+<p>Open up the log view on the rekor server and show that entries were logged</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rekor-log-log.png" alt="rekor log log">
+</div>
+<div class="title">Figure 3. Two entries in RekorLog made by build chain</div>
+</div>
+<div class="paragraph">
+<p><span class="image right"><img src="_images/sign-image-stage.png" alt="sign image stage" width="200"></span></p>
+</div>
+</li>
+<li>
+<p>Return to the Jenkins Blue Ocean tab and look at the logs for the <code>CI: Sign Trusted Container Image</code> stage</p>
+</li>
+<li>
+<p>Scroll down to the bottom of the logs and show the two rekor log events</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rekorlog-jenkins-log.png" alt="rekorlog jenkins log">
+</div>
+<div class="title">Figure 4. Two log events</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="platform.html#platform" class="query-params-link">Secure Software Factory Platform</a></span>
+  <span class="next"><a href="audit.html#audit" class="query-params-link">Digital Attestation and Auditing with Rekor</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
+</footer>
+<script src="../_/js/vendor/clipboard.js"></script>
+<script src="../_/js/site.js"></script>
+<script async src="../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

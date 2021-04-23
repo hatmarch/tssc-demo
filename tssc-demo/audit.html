@@ -4,8 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Secure Software Factory Demo :: Secure Software Factory Demo</title>
-    <link rel="canonical" href="https://hatmarch.github.io/tssc-demo/tssc-demo/index.html">
-    <link rel="next" href="setup.html">
+    <link rel="canonical" href="https://hatmarch.github.io/tssc-demo/tssc-demo/audit.html">
+    <link rel="prev" href="pipeline.html#pipeline">
+    <link rel="next" href="enforce.html#enforce">
     <meta name="generator" content="Antora 2.3.4">
     <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
@@ -93,7 +94,7 @@
     <a class="nav-link" href="pipeline.html#pipeline">Create and Examine Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="audit.html#audit">Digital Attestation and Auditing with Rekor</a>
+    <a class="nav-link" href="#audit">Digital Attestation and Auditing with Rekor</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="enforce.html#enforce">Policy Enforcement with Open Policy Agent</a>
@@ -127,69 +128,33 @@
 <main class="article">
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
-  <a href="index.html" class="home-link is-current"></a>
+  <a href="index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Secure Software Factory Demo</a></li>
+    <li><a href="walkthrough.html">Walkthrough</a></li>
+    <li><a href="#audit">Digital Attestation and Auditing with Rekor</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///workspaces/tssc-demo/documentation/modules/ROOT/pages/index.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///workspaces/tssc-demo/documentation/modules/ROOT/pages/audit.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <article class="doc">
 <h1 class="page">Secure Software Factory Demo</h1>
-<div class="sect1 text-center strong">
-<h2>Overview</h2>
+<div class="sect1">
+<h2 id="audit"><a class="anchor" href="#audit"></a>Digital Attestation and Auditing with Rekor</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This is a demo to show Red Hat&#8217;s interpretation of the <a href="https://dodcio.defense.gov/Portals/0/Documents/DoD%20Enterprise%20DevSecOps%20Reference%20Design%20v1.0_Public%20Release.pdf">Department of Defense&#8217;s Software Enterprise DevSecOps Reference Design</a></p>
+<p>In this section we look at what was logged to Rekor and how it relates to the Jenkins pipeline build from the previous section</p>
 </div>
 <div class="paragraph">
-<p>It makes use of the following components:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><a href="https://github.com/ploigos/ploigos-software-factory-operator">The Ploigos Operator</a>: Red Hat sponsored operator for creating a trusted software supply chain</p>
-</li>
-<li>
-<p><a href="https://github.com/sigstore/rekor">Rekor</a>: An immutable signature transparency log to provide further provenance and auditability for resources created by Ploigos</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1 tiles browse">
-<h2>Browse modules</h2>
-<div class="sectionbody">
-<div class="ulist tile tile">
-<div class="title"><a href="#01-setup.adoc" class="page unresolved">Demo Setup</a></div>
-<ul>
-<li>
-<p><a href="walkthrough.html" class="page">Walkthrough</a></p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="platform.html#platform" class="page">Secure Software Factory Platform</a></p>
-</li>
-<li>
-<p><a href="pipeline.html#pipeline" class="page">Create and Examine Pipeline</a></p>
-</li>
-<li>
-<p><a href="audit.html#audit" class="page">Digital Attestation and Auditing with Rekor</a></p>
-</li>
-<li>
-<p><a href="enforce.html#enforce" class="page">Policy Enforcement with Open Policy Agent</a></p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
+<p><em>Coming Soon</em></p>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="next"><a href="setup.html" class="query-params-link">Demo Setup</a></span>
+  <span class="prev"><a href="pipeline.html#pipeline" class="query-params-link">Create and Examine Pipeline</a></span>
+  <span class="next"><a href="enforce.html#enforce" class="query-params-link">Policy Enforcement with Open Policy Agent</a></span>
 </nav>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">

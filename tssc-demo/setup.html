@@ -4,8 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Secure Software Factory Demo :: Secure Software Factory Demo</title>
-    <link rel="canonical" href="https://hatmarch.github.io/tssc-demo/tssc-demo/index.html">
-    <link rel="next" href="setup.html">
+    <link rel="canonical" href="https://hatmarch.github.io/tssc-demo/tssc-demo/setup.html">
+    <link rel="prev" href="index.html">
+    <link rel="next" href="appendix.html#appendix">
     <meta name="generator" content="Antora 2.3.4">
     <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
@@ -70,12 +71,12 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="setup.html">Demo Setup</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="setup.html#prerequisite">Prerequisites</a>
+    <a class="nav-link" href="#prerequisite">Prerequisites</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="appendix.html#appendix">Appendix</a>
@@ -127,69 +128,93 @@
 <main class="article">
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
-  <a href="index.html" class="home-link is-current"></a>
+  <a href="index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Secure Software Factory Demo</a></li>
+    <li><a href="setup.html">Demo Setup</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///workspaces/tssc-demo/documentation/modules/ROOT/pages/index.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///workspaces/tssc-demo/documentation/modules/ROOT/pages/setup.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <article class="doc">
 <h1 class="page">Secure Software Factory Demo</h1>
-<div class="sect1 text-center strong">
-<h2>Overview</h2>
+<div class="sect1">
+<h2 id="prerequisite"><a class="anchor" href="#prerequisite"></a>Prerequisite Tools</h2>
 <div class="sectionbody">
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Visual Studio Code Remote Development (Containers)</div>
 <div class="paragraph">
-<p>This is a demo to show Red Hat&#8217;s interpretation of the <a href="https://dodcio.defense.gov/Portals/0/Documents/DoD%20Enterprise%20DevSecOps%20Reference%20Design%20v1.0_Public%20Release.pdf">Department of Defense&#8217;s Software Enterprise DevSecOps Reference Design</a></p>
+<p>To limit the amount of incompatibility in setting up the demo and tutorial, all the commands that are listed are expected to be run in an appropriately setup container.  Specifically, this demo supports the <a href="https://code.visualstudio.com/docs/remote/containers">VS Code Remote Development (Containers)</a> as can be seen in the <code>.devcontainer</code> directory.</p>
 </div>
 <div class="paragraph">
-<p>It makes use of the following components:</p>
+<p>All commands that are listed for the demo and tutorial are assumed to be run from within the terminal (and thus "devcontainer") of VSCode.  The container has been setup to have all the necessary command and tools necessary to run and compile the tutorial/demo.</p>
 </div>
+<div class="paragraph">
+<p>This tutorial/demo was developed using Visual Studio Code Remote Development on a MacBook Pro using Docker for Desktop (Mac)</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You must have cluster-admin access to an OpenShift 4.6 cluster to be able to run the walkthrough demos</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="demo-setup"><a class="anchor" href="#demo-setup"></a>Demo Setup</h2>
+<div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><a href="https://github.com/ploigos/ploigos-software-factory-operator">The Ploigos Operator</a>: Red Hat sponsored operator for creating a trusted software supply chain</p>
+<p>Clone the repo onto your local machine</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone https://github.com/hatmarch/tssc-demo --recurse-submodules tssc-demo</code></pre>
+</div>
+</div>
 </li>
 <li>
-<p><a href="https://github.com/sigstore/rekor">Rekor</a>: An immutable signature transparency log to provide further provenance and auditability for resources created by Ploigos</p>
+<p>Change into that directory and start vscode</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd tssc-demo
+code .</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>When prompted to open the folder in a container, accept.</p>
+</li>
+<li>
+<p>Use <span class="keyseq"><kbd>cmd</kbd>+<kbd>j</kbd></span> to open the terminal</p>
+</li>
+<li>
+<p>Log into an OpenShift 4.6 cluster using the <code>oc login</code> command</p>
+</li>
+<li>
+<p>Once logged in, run the following command in the terminal:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$DEMO_HOME/scripts/create_demo.sh -i</code></pre>
+</div>
+</div>
 </li>
 </ol>
 </div>
 </div>
 </div>
-<div class="sect1 tiles browse">
-<h2>Browse modules</h2>
-<div class="sectionbody">
-<div class="ulist tile tile">
-<div class="title"><a href="#01-setup.adoc" class="page unresolved">Demo Setup</a></div>
-<ul>
-<li>
-<p><a href="walkthrough.html" class="page">Walkthrough</a></p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="platform.html#platform" class="page">Secure Software Factory Platform</a></p>
-</li>
-<li>
-<p><a href="pipeline.html#pipeline" class="page">Create and Examine Pipeline</a></p>
-</li>
-<li>
-<p><a href="audit.html#audit" class="page">Digital Attestation and Auditing with Rekor</a></p>
-</li>
-<li>
-<p><a href="enforce.html#enforce" class="page">Policy Enforcement with Open Policy Agent</a></p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</div>
-</div>
 <nav class="pagination">
-  <span class="next"><a href="setup.html" class="query-params-link">Demo Setup</a></span>
+  <span class="prev"><a href="index.html" class="query-params-link">Secure Software Factory Demo</a></span>
+  <span class="next"><a href="appendix.html#appendix" class="query-params-link">Appendix</a></span>
 </nav>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
