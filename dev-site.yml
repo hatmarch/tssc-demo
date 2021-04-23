@@ -14,9 +14,7 @@ content:
 asciidoc:
   attributes:
     title: Secure Software Factory Demo (Dev Mode)
-    git_repo: https://github.com/hatmarch/tssc-demo
-    app_code_repo_name: 'reference-app-code'
-    rekor_project: 'tssc-demo-rekor'
+    page-pagination: true
   extensions:
     - ./lib/remote-include-processor.js
     - ./lib/tab-block.js
