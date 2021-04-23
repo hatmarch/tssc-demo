@@ -9,6 +9,6 @@ spec:
     sourceUrl: 'https://github.com/hatmarch/ploigos-reference-app.git'
   autoStartPipeline: true
   helmRepo:
-    destinationRepoName: reference-helm-gitops
+    destinationRepoName: demo-app-helm
     sourceUrl: 'https://github.com/hatmarch/ploigos-reference-helm.git'
   serviceName: reference-app-fruit
