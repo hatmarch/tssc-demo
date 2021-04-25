@@ -23,6 +23,25 @@
             "preLaunchTask": "clean-results"
         },
         {
+
+            "name": "Python: Debug PSR: Generate metadata",
+            "type": "python",
+            "request": "launch",
+            "program": "${env:DEMO_HOME}/ploigos-step-runner/src/ploigos_step_runner/__main__.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-s",
+                "generate-metadata",
+                "--config",
+                "${env:DEMO_HOME}/test/config"
+                // "${env:DEMO_HOME}/test/platform-config.yaml",
+                // "${env:DEMO_HOME}/test/repo-config.yaml"
+            ],
+            "env":{
+                "PYTHONPATH": "/workspaces/tssc-demo/ploigos-step-runner/src"
+            }
+        },
+        {
             "name": "Debug go file",
             "type": "go",
             "request": "launch",
@@ -56,24 +75,48 @@
             ]
         },
         {
-            "name": "Debug delve",
+            "name": "Debug local rekor server",
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${file}",
+            "program": "/workspaces/tssc-demo/rekor/cmd/rekor-server/main.go",
             "env": {},
             "args": [
                 "serve",
                 "--trillian_log_server.address=localhost",
-                "--trillian_log_server.port=8090",
+                "--trillian_log_server.port=8091",
                 "--rekor_server.address=0.0.0.0",
+                "--rekor_server.signer=memory",
                 "--redis_server.address=localhost",
                 "--redis_server.port=6379",
-                "--log_type=prod"
-            ]
+                "--log_type=dev"
+            ],
+            "preLaunchTask": "rekor-server-forward-redis",
+            "postDebugTask": "rekor-server-forward-port-cleanup-redis"
         },
         {
             "name": "Debug rekor",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "/workspaces/tssc-demo/rekor/cmd/rekor-cli/main.go",
+            "env": {
+                // flags can be
+            },
+            "args": [
+                "upload",
+                "--rekor_server",
+                "http://rekor-server-tssc-demo-rekor.apps.cluster-f82a.f82a.example.opentlc.com",
+                "--signature",
+                "/tmp/sig.asc",
+                "--public-key",
+                "/tmp/p.pub",
+                "--artifact",
+                "https://nexus-devsecops.apps.cluster-f82a.f82a.example.opentlc.com/repository/container-image-signatures/platform/ref-quarkus-mvn-jenkins-std-fruit@sha256=126075f3a87bca09f927216fddff2d5cf849c395b45187027f76e1f10f56b85a/signature-1"
+            ]
+        },
+        {
+            "name": "Debug rekor verify",
             "type": "go",
             "request": "launch",
             "mode": "debug",
@@ -81,15 +124,15 @@
             //"program": "${file}",
             "env": {},
             "args": [
-                "upload",
+                "verify",
                 "--rekor_server",
                 "http://rekor-server-tssc-demo-rekor.apps.cluster-3627.3627.example.opentlc.com",
                 "--signature",
-                "/workspaces/tssc-demo/secrets/mysignature.asc",
+                "/tmp/artifact-false.asc",
                 "--public-key",
-                "/workspaces/tssc-demo/secrets/gpg_public_key",
-                "--artifact"
-                "/workspaces/tssc-demo/rekor/OWNERS.md"
+                "/tmp/gpg_public_key_secret",
+                "--artifact",
+                "/tmp/signature-1"
             ]
         },
     ]
