@@ -136,19 +136,739 @@
     <li><a href="#audit">Digital Attestation and Auditing with Rekor</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="https://github.com/hatmarch/tssc-demo/edit/master/documentation/modules/ROOT/pages/audit.adoc">Edit this Page</a></div>
-  </div>
+  <div class="edit-this-page"><a href="file:///workspaces/tssc-demo/documentation/modules/ROOT/pages/audit.adoc">Edit this Page</a></div>
+</div>
   <div class="content">
 <article class="doc">
 <h1 class="page">Secure Software Factory Demo</h1>
 <div class="sect1">
 <h2 id="audit"><a class="anchor" href="#audit"></a>Digital Attestation and Auditing with Rekor</h2>
 <div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>First we need to setup different windows to show off different aspects of rekor</p>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_browser"></a>Browser</p>
+</li>
+<li>
+<p><a id="tabset1_shell"></a>Shell</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset1_browser">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Make sure one of the tabs you have open are the Jenkins results from the previous section</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset1_shell">
 <div class="paragraph">
-<p>In this section we look at what was logged to Rekor and how it relates to the Jenkins pipeline build from the previous section</p>
+<p><span class="image right"><img src="_images/example-shell.png" alt="example shell" width="200"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Setup a suitably large font shell in which to demonstrate most of what has been saved into Rekor, something like you see to the right</p>
+</li>
+<li>
+<p>Navigate to the root of the git repo you cloned <a href="setup.html#demo-setup" class="page">here</a></p>
+</li>
+<li>
+<p>Run the following command to ensure that you have all the necessary tools in which to demonstrate the aspects of this section</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -v $(pwd):/workspaces/tssc-demo -w /workspaces/tssc-demo quay.io/mhildenb/tssc-demo-base:latest /bin/zsh</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Inside the shell, log into the target openshift cluster as a <code>cluster-admin</code></p>
+</li>
+<li>
+<p>Once logged in make sure you re-run shell setup so that you can get the (external) external <code>REKOR_SERVER</code> published</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">. ${DEMO_HOME}/scripts/shell-setup.sh</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code>Exporting REKOR_SERVER for use with rekor cli commands (rekor host is: rekor-server-tssc-demo-rekor.apps.cluster-f82a.f82a.example.opentlc.com)</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Copy the last URL published by the sign container image step and assign it to REKOR_URL in the <code>Shell</code></p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/last-rekor-url.png" alt="last rekor url">
+</div>
+</div>
+</li>
+<li>
+<p>In the <code>Browser</code> navigate to the Developer Perspective of <code>tssc-demo-rekor</code> project.  Show the resources of the rekor-server Deployment as shown</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rekor-dev-perspective.png" alt="rekor dev perspective">
+</div>
+</div>
+</li>
+<li>
+<p>Explain that the <code>REKOR_URL</code> that ploigos used to access rekor was the Kubernetes SVC address of the rekor server.  But it has also been exposed external to the cluster</p>
+</li>
+<li>
+<p>Let&#8217;s call into rekor to see the information about the build we just completed.  First we&#8217;ll need to translate the service local address into the public route.  Run the following command in the shell to get this:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo ${REKOR_URL} | sed -e "s#http://rekor-server.tssc-demo-rekor.svc.cluster.local:3000#${REKOR_REKOR_SERVER}#g"</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">http://rekor-server-tssc-demo-rekor.apps.cluster-f82a.f82a.example.opentlc.com/api/v1/log/entries/2e98bd711b91a29bddf6404b099f814a2239a532e98833b1ba6d0b0e1867a381</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Copy the output of the above command and paste the URL into a new tab of the browser</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Point out the different fields such as rootHash and tree size that betray the Merkle tree that is behind the rekor implementation</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/rekor-url-entry.png" alt="rekor url entry">
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Copy the uuid from the previous entry and paste this into the <code>Shell</code> as</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">UUID=&lt;pasted value&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Show the help of the rekor command line to show some of the options possible</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rekor --help</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Rekor command line interface tool
+
+Usage:
+  rekor [command]
+
+Available Commands:
+  get         Rekor get command
+  help        Help about any command
+  loginfo     Rekor loginfo command
+  logproof    Rekor logproof command
+  search      Rekor search command
+  upload      Upload an artifact to Rekor
+  verify      Rekor verify command
+
+Flags:
+      --api-key string     API key for api.rekor.dev
+      --config string      config file (default is $HOME/.rekor.yaml)
+      --format format      Command output format (default default)
+  -h, --help               help for rekor
+      --rekor_server url   Server address:port (default <a href="https://api.rekor.dev" class="bare">https://api.rekor.dev</a>)
+      --store_tree_state   whether to store tree state in between invocations for additional verification (default true)</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="build-nodes"><a class="anchor" href="#build-nodes"></a>Using Rekor to Review "Build Nodes"</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ploigos wrote two "build output node" entries into Rekor.  We need to understand Rekor&#8217;s storage format to get them out.</p>
+</li>
+<li>
+<p>Let&#8217;s take a closer look at that format in the shell by running the following command (using the <code>UUID</code> that we pasted earlier):</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">LAST_REKOR_ENTRY=$(rekor get --format json --uuid $UUID )
+echo ${LAST_REKOR_ENTRY} | jq</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "Body": {
+    "RekordObj": {
+      "data": {
+        "hash": {
+          "algorithm": "sha256",
+          "value": "341dfa0799826c638e69dc23dd8c320a397718654fc5f003eb535347fe659995"
+        }
+      },
+      "extraData": "eyJzdGVwTmFtZSI6ICJzaWduLWNvbnRhaW5lci1pbWFnZSIsICJzdGVwT3V0cHV0IjogIm93R2J3TXZNd01FWXRQSkZ5UVh1c25iRzB3ZjJKREVrTklXTFZTc2xGMldXWkNZbjVpaFpWU3RscHFUbWxXU1dWSUxZS2ZuSjJhbEZ1a1dwYWFsRnFYbkpxVXBXU25tcEZhWEZ1bENKbE5TeTR0VGsvSUppdmNRQ0lKR2NVMXBjQWhST3N6QksxQU1UcVJXSnVRVTVxWHI1QlVCRGM1TDFrdk56OVF0eUVrdlM4b3R5OVlIRzZoYVdKaFpsQXczTUxjdlR6VXJOeTg3TUs5WXRMa25SVFNzcXpTeXhNdFF6MERQU3pVM016Rk9xMVZIS3pFMU1UMFZ5Vm01aVhtWmFhbkdKYmtwbU9wQUNPcTQ0STlISTFNekswTWpNd053MHpUalJ3andwT2RIQU1zM1N5TnpJMEN3dEpTVXR6U2pGTkRuTndzUXkyZGpTTk1uRTFOREMzTURJUE0zY0xOVXd6ZEFnemRRc3ljSTBFV1JaU1dVQnlMdUpKZm01bWNrS3lmbDVKVUJYcEJZcEZHZW01eVdXbEJhbGdoVGxGNVJrNXVkQndpMjVLQldvdUFpaHgxVFBWTTlJQ1doU1ppN1FkY0J3VUxJeU5ETzBORFExTVRjMHFLM3RaRFJtWVdEa1lKQVZVMlF4T0g2SFMrSGZMQUd2WStkdXdPS0hsUWtVTnd4Y25BSXdrYTkzMmYvd2JnNlpibExKVmpuaFBPL3hvSTNUdXY2VTJvckptN3p4VFh0Y3UzSUJlOHIzcWkxaWRuZjFpLy9OZi9UUWRNc1Y5cDB6czJaNVc1eGEraytSNDFSd3JaWG5wWmt2cnY3M1VKTnlNbitxejNQNVF2WnZGbzdGZHlvZnBPOW1MZFk4dHl5VjQ5WW1wMUNQS2R0ZVgyRUk4MDhvODlBNmFYajZuMDlHempGNWFlTzJ5NEd5TlpjbUdUbnNPUHAydStUOHlRMlBUL3htY251eStkS1owa2NYYkUxcU50OXJQeHBlOW16VkJzN043WWVTZlo1NU94cjJCZGhXVGl4MzVqMGpvSGhSWW9adlE1T3Q0d3ltQzc5MnplZmNlYlp1NlpmL2VqYytzRVh2aUdiTFd5cnZmV2VuZ1ludjZaT2ZIVVdYZjVnVnIyalg5dmo2SEkva0tkeWUzZCtTWWpmNnpXRnFMb3JycTg0SEFBPT0iLCAicHJldmlvdXNSZWtvclVVSUQiOiAiODVhY2UzNDRjMWM4MDY1ODg1NDIzNGU0MWJmZjJhMWNlMzFmNzk5OWU2OGU0ODYwZDFlYWExMTZjZmQ3Y2RmOSJ9",
+      "signature": {
+        "content": "LS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0KCmlRRXpCQUFCQ0FBZEZpRUVNTWZjQ2lEK21oQkt4czdZVXFub2ROQUxkb2NGQW1DQ1Z4Y0FDZ2tRVXFub2ROQUwKZG9mcWxBZi9hbUZhNXMzdC82dUtDYVhaSEd5eHhFQlJ0eVgydWZYTmtiRHVBS1NIdHBTdXI0eTUxbGl2NlVWVwpSTTZYekVmR3lDV1ZBMGZWcTR1K2Q3M0NVVnd5Q24reEJtdGhuSVAzVVM5dHlOL2xOTkp1QVBwMjI4cll3cDhyClZHY2d3S2IxdUoyV0RLL3ppY0F3bzZJMnRuYnJXUUdZWldaL2M0STNQdVpzT29FaVkzbkx3Z1N4NEE1ZjZYQU4KeWxmdFZtWURBblNaTy9xRjBhZ0E3YnF3RGdUWW8rTHdGUjI1ckpqc3FWeGRFR3EzY2o0dlcvVE5OU2Z4bWRFRgpWZ1BKWFN5a2N4NVljQ0U4cFpkekhKSGlkQlpiejFCM0hHUmwxS2tqSDVTN2lHeEdQa3JNNHZaQVROQkpWM016ClVmMTM0V05INTczNFc4dll5aDQvYk5lYUkwUVJCUT09Cj11Nk1YCi0tLS0tRU5EIFBHUCBTSUdOQVRVUkUtLS0tLQo=",
+        "format": "pgp",
+        "publicKey": {
+          "content": "LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgp4c0JOQkdDQmoyUUJDQURRS0ZaeUJMbU1FdFJlV05EWW9jdml3OHl0Z2FZM1V4VCtRclZpN1Bia09teDFqUkw2CkFPQW1rS3p1allYRmxPeUg0YUI3TDhvNWdPekdIZWxheXNZTm1lNi9CclUydjFYYUxLN2NzMWRUMituSE81N0wKTi9QMW5WclZJZTVKTFdsai9GQTJlT3o2KytDcHRvd3dyWGYvMTRrNitqcVJsd1c5ckVWWFBYQUV5TmFqL1N4UwowWFRIMHNYNVl4TWEwSnV1NjJlQ1p6ZW1oR2xiYjZLUzVpWlVyUTNob0hZVFBFNjBuQmdQZ0kxcmNqaW50QXRnCmUxQmRhaWg1TWlsYUk3SVNqLzJLZjJpOXQwQjNscjNQSWZONWRUSDJXMUNIQzlOMUFPWW9LVkhoa2JRVU1lei8KemhlelFQM05uSG1XRjg3SU9uSm9tUG5DMXZncDFuNTl3MHJSQUJFQkFBSE5OVlJ6YzJNZ1UyVnlkbWxqWlVGagpZMjkxYm5RZ1BIUnpjMk10YzJWeWRtbGpaUzFoWTJOdmRXNTBRSEpsWkdoaGRDNWpiMjArd3NDT0JCTUJDQUE0CkZpRUVkQnJpSkd5a3gwbXFNSzJxVUVyV2ZrV0xVQ1lGQW1DQmoyUUNHeThGQ3drSUJ3SUdGUW9KQ0FzQ0JCWUMKQXdFQ0hnRUNGNEFBQ2drUVVFcldma1dMVUNhNElnZitMZXZVc2VXc3NKTXBvT2JsbVBmTFQrVS9MOVg4cE5aYwo0UzRvaFQ4a1F4QjhqVUxwMWFlVzI3QWM5a1hRc1NTVW1Rb2xOOHJNSTgwMDJMS1UrdWhOcVdqRXVDS3NMTWhmCnE3Q1dEdThFa29YRkpzKy92MlZqZlhueWwxWTlPcGNDcHorYUY0c3BTZmdEN0dkd0Z6RVBIOXVhQVdaRzkxQmUKeTFJRGhLdlpQUmpjamJUMUc0WW1MUzBxTmVuSEVySHVLZkNlbUpxZWlGemtCUjZvS3kvdWoyWE1ScW1Hdmk2VApVaDJ0SFdRWEd1KzUyRnh4TFhLSVVjNXFzdXJsRFRCcnFKclJTN3BYUFBjOW4rVzhsTlZ2RWI1ejMrR1JTaFpOCkd2aHl5aVV6S2NwSDJVYlhXb2dNTy9kQ0V5OWYwclcwRmw1OE9HL2lockgwem5EL01qSE5tODdBVFFSZ2dZOWsKQVFnQXUzVExYenptMzdIbngxRXB5WHZJb1dtN1NtZDVtY1N1SUpheWl6T2tJWlN1bThvaDNkb2VZUmxRVHhFawp6Qmd1L3BXdW9vNGF0ZWVPaEU2K2kzWFJpVm5zN2xjZ2NLK1lHbWlmRGdmUmlpYWNEd3FlTEtrelg1OFRka2djClIrRDY3V3VtQWMrNERpZ0RsMGlYcThQMWZaL29hUURLS1pmNkFML0pzODRhV3Y4YnNtRCtzdWM5QUJqcDRYSHIKS0FMbzdEeGxIdzVKVk9nRGUzd2E4algzcTJ1cGY0Z0gwd1J6Y0ZYVHZHam5tdlJkV3pLZnRkUWtvc0gyQXhuaApPT0pidjBGb05OTkpZai9uVUpiU3Qxd3BIaHh6Zlh0SzcrZkNZRzl6RDgya3NkUmRGSmpOZEI5V3psTVZGQTNVCjlncFkrMXk1ZHloOUU3UmRDQ2lvT3hxekRRQVJBUUFCd3NHc0JCZ0JDQUFnRmlFRWRCcmlKR3lreDBtcU1LMnEKVUVyV2ZrV0xVQ1lGQW1DQmoyUUNHeTRCUUFrUVVFcldma1dMVUNiQWRDQUVHUUVJQUIwV0lRUXd4OXdLSVA2YQpFRXJHenRoU3FlaDAwQXQyaHdVQ1lJR1BaQUFLQ1JCU3FlaDAwQXQyaHpwMkNBQ1hFS3pSSFBjL1hwOW1iV2NjCkF3eFhZQXdBYU9YNnJENVpsa0kwU1A5QjdtYkhiU3Mxa0h5YmJuNWtTM0RDTzZSYVZyVGxCM1lJZmhRZU5vUUwKMHh5V09wc0c4WTU2MkVMSzlkbUUwOU9ETTlBS3NLUE9JQ3RYeUxMT0NUMXB2bS9rUnBGbEpNMmJDUmU4WSt5RApvdXQxZlVMZkpXaHVjaUJhY25RTFJZUkRwR0tmNVp5MUE2YzlaWHVOTmo0cDdHbFZVeHA1Y0crQWQ3b05aSjF5CnFObHcyMGxIdVFPUHNxck4vVThBVWNpN3k1WTF5c2NXMW52eFNTdVJoekdWWFVyWEExREwwZFJ3U1pkZjVWMlYKRE0wRGx4VU1Ubmo5cWxpZVZVWlUrSmtBMTBLalczMndPa0prT2NYN1M1RFdhVVRhMHdrMEl3T3doeVV3L2V1WQp3clBRUUpNSUFJSjJmZFlhbW54UWRwNkxqbklhZkRwcUdhUHNEWmdwNmUvWkV2WGU1b3RPYndMSUZ4R3NKYmVmCk1maHh6T1h2UDA0Y0tMNGlGWVdWUFEycURTc3E1U0dKbW5oQlFpMGgyNmJDOEpIYURxVDlXeFBuQks0RktrVXoKUnNaSDJwUTZEN29RVndQZm92ZjYzYkVoYnhJS0JyY1FnSm1sS1JBejFwckFHV1d4R0hvNmZZQkFSZUl1V2FPUQp2RTVLZGlYYjB4MWRUM1JuUGIvRWZtZzRGQ2FRSVFsSG1aSmtwOEhYaHVBaWYyemVFeDZleTNpV2ltUUdWaXQwCnFnVmlTRHd3a0xzWFVxMFQxMGttUUUwQWdsclFnaEVSRlpyRDlPeWNnbHg0QVJSV3IvTGVYaFcvOGYvY1FrUXQKRGJoRHdkRTE2bytnUmMvS0VSMlhTUHdyYXA1TGFXMD0KPVBxdGMKLS0tLS1FTkQgUEdQIFBVQkxJQyBLRVkgQkxPQ0stLS0tLQ=="
+        }
+      }
+    }
+  },
+  "LogIndex": 9,
+  "IntegratedTime": 1619154711,
+  "UUID": "2e98bd711b91a29bddf6404b099f814a2239a532e98833b1ba6d0b0e1867a381"
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>We can find our build node in the <code>extraData</code> as <em>base64 encoded json</em>.  Thus we can pull out our build output node like this:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">LAST_BUILD_NODE=$(echo $LAST_REKOR_ENTRY | jq -r .Body.RekordObj.extraData | base64 -d )
+echo ${LAST_BUILD_NODE} | jq</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "stepName": "sign-container-image",
+  "stepOutput": "owGbwMvMwMEYtPJFyQXusnbG0wf2JDEkNIWLVSslF2WWZCYn5ihZVStlpqTmlWSWVILYKfnJ2alFukWpaalFqXnJqUpWSnmpFaXFulCJlNSy4tTk/IJivcQCIJGcU1pcAhROszBK1AMTqRWJuQU5qXr5BUBDc5L1kvNz9QtyEkvS8oty9YHG6haWJhZlAw3MLcvTzUrNy87MK9YtLknRTSsqzSyxMtQz0DPSzU3MzFOq1VHKzE1MT0VyVm5iXmZaanGJbkpmOpACOq44I9HI1MzK0MjMwNw0zTjRwjwpOdHAMs3SyNzI0CwtJSUtzSjFNDnNwsQy2djSNMnE1NDC3MDIPM3cLNUwzdAgzdQsycI0EWRZSWUByLuJJfm5mckKyfl5JUBXpBYpFGem5yWWlBalghTlF5Rk5udBwi25KBWouAihx1TPVM9ICWhSZi7QdcBwULIyNDO0NDQ1MTc0qK3tZDRmYWDkYJAVU2QxOH6HS+HfLAGvY+duwOKHlQkUNwxcnAIwka932f/wbg6ZblLJVjnhPO/xoI3Tuv6U2orJm7zxTXtcu3IBe8r3qi1idnf1i//Nf/TQdMsV9p0zs2Z5W5xa+k+R41RwrZXnpZkvrv73UJNyMn+qz3P5QvZvFo7FdyofpO9mLdY8tyyV49Ymp1CPKdteX2EI808o89A6aXj6n09GzjF5aeO2y4GyNZcmGTnsOPp2u+T8yQ2PT/xmcnuy+dKZ0kcXbE1qNt9rPxpe9mzVBs7N7YeSfZ55Oxr2BdhWTix35j0joHhRYoZvQ5Ot4wymC792zefcebZu6Zf/ejc+sEXviGbLWyrvfWengYnv6ZOfHUWXf5gVr2jX9vj6HI/kKdye3d+SYjf6zWFqLorrq84HAA==",
+  "previousRekorUUID": "85ace344c1c80658854234e41bff2a1ce31f7999e68e4860d1eaa116cfd7cdf9"
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Highlight the different fields of the build node</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>stepName</strong>: The ploigos step name that this output represents</p>
+</li>
+<li>
+<p><strong>stepOutput</strong>: The base64 encoded output of <strong>stepName</strong></p>
+</li>
+<li>
+<p><strong>previousRekorUUID</strong>: The uuid of the previous Rekor entry that was made by the Ploigos toolchain</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>In this case, the last build output node contains the (detached) signature of the build image that was signed by the toolchain.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Point out that this signature binds the ploigos toolchain to the image.</p>
+</li>
+<li>
+<p>Recording it in rekor binds the signature to the rest of the build output entries to provide extra security and provenance info</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="verify"><a class="anchor" href="#verify"></a>Verifying entry in Rekor</h3>
+<div class="paragraph">
+<p>In this section we&#8217;ll verify the authenticity of what&#8217;s stored in Rekor and then use a subset of those artifacts to prove that what is in rekor is indeed the build signature.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the <code>Shell</code> show the output of the rekor verify command to see what we need to verify our output</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rekor verify --help</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Verifies an entry exists in the transparency log through an inclusion proof
+
+Usage:
+  rekor verify [flags]
+
+Flags:
+      --artifact fileOrURLFlag     path or URL to artifact file
+      --entry fileOrURLFlag        path or URL to pre-formatted entry file
+  -h, --help                       help for verify
+      --log-index logIndex         the index of the entry in the transparency log
+      --pki-format pkiFormat       format of the signature and/or public key (default pgp)
+      --public-key fileOrURLFlag   path or URL to public key file
+      --signature fileOrURLFlag    path or URL to detached signature file
+      --type typeFormat            type of entry (default rekord)
+      --uuid uuid                  UUID of entry in transparency log (if known)
+
+Global Flags:
+      --api-key string     API key for api.rekor.dev
+      --config string      config file (default is $HOME/.rekor.yaml)
+      --format format      Command output format (default default)
+      --rekor_server url   Server address:port (default <a href="https://api.rekor.dev" class="bare">https://api.rekor.dev</a>)
+      --store_tree_state   whether to store tree state in between invocations for additional verification (default true)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>So to verify that it is this build&#8217;s container signature we&#8217;ll need three things</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Artifact</strong>: In this case, our artifact is the <em>container signature</em> that we stored in Rekor</p>
+</li>
+<li>
+<p><strong>Signature</strong>: This is the signature of the Rekor entry itself.  We will pull this out of Rekor</p>
+</li>
+<li>
+<p><strong>Public Key</strong>: The public key that was used to sign the Rekor entry.</p>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset2_artifact"></a>Artifact</p>
+</li>
+<li>
+<p><a id="tabset2_signature"></a>Signature</p>
+</li>
+<li>
+<p><a id="tabset2_public-key"></a>Public Key</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset2_artifact">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Remember that it&#8217;s the Build Node that we signed in rekor, NOT the image signature alone.  (The build node contains the image signature).  One way we can get the artifact is out of rekor</p>
+</li>
+<li>
+<p>We could have stored this build node json anywhere, but in this case we&#8217;re just going to reuse the <code>LAST_BUILD_NODE</code> that we found earlier</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ARTIFACT_CONTENT=${LAST_BUILD_NODE}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset2_signature">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Next we&#8217;ll get the Rekor Entry signature using the Rekor Entry itself</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">LAST_ENTRY_SIG=$(echo ${LAST_REKOR_ENTRY} | jq -r .Body.RekordObj.signature.content | base64 -d)
+echo ${LAST_ENTRY_SIG}</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEMMfcCiD+mhBKxs7YUqnodNALdocFAmCCVxcACgkQUqnodNAL
+dofqlAf/amFa5s3t/6uKCaXZHGyxxEBRtyX2ufXNkbDuAKSHtpSur4y51liv6UVW
+RM6XzEfGyCWVA0fVq4u+d73CUVwyCn+xBmthnIP3US9tyN/lNNJuAPp228rYwp8r
+VGcgwKb1uJ2WDK/zicAwo6I2tnbrWQGYZWZ/c4I3PuZsOoEiY3nLwgSx4A5f6XAN
+ylftVmYDAnSZO/qF0agA7bqwDgTYo+LwFR25rJjsqVxdEGq3cj4vW/TNNSfxmdEF
+VgPJXSykcx5YcCE8pZdzHJHidBZbz1B3HGRl1KkjH5S7iGxGPkrM4vZATNBJV3Mz
+Uf134WNH5734W8vYyh4/bNeaI0QRBQ==
+=u6MX
+-----END PGP SIGNATURE-----</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset2_public-key">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>As part of its platform install, the ploigos public key can be pull out of a secret in the <code>devsecops</code> project</p>
+</li>
+<li>
+<p>In the <code>Browser</code> navigate to the Secrets section of the <code>devsecops</code> project and search for <code>tssc-gpg-key</code></p>
+</li>
+<li>
+<p>On the secret details, click on the copy icon</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/copy-public-key.png" alt="copy public key">
+</div>
+</div>
+</li>
+<li>
+<p>Paste into the shell as follows:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PLOIGOS_PUBLIC_KEY=$(echo "&lt;pasted content&gt;")</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p><em>Coming Soon</em></p>
+<p><strong>NOTE:</strong> <em>Alternatively, you can just run the following command in the <code>Shell</code> to easily pull out the secret:</em></p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PLOIGOS_PUBLIC_KEY=$(oc get secret tssc-gpg-key -n devsecops -o jsonpath='{.data.gpg_public_key}' | base64 -d)
+echo ${PLOIGOS_PUBLIC_KEY}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Once you collected all three elements, you can have rekor verify the build entry like this:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rekor verify --artifact &lt;(echo -n ${ARTIFACT_CONTENT}) --public-key &lt;(echo ${PLOIGOS_PUBLIC_KEY}) --signature &lt;(echo ${LAST_ENTRY_SIG})</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Point out that the output of the above command does two verification steps</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Signature Verification</strong>: Checks to make sure that the signature actually matches the artifact and public key</p>
+</li>
+<li>
+<p><strong>Independent <a href="https://www.derpturkey.com/merkle-tree-construction-and-proof-of-inclusion/">"Inclusion Proof"</a></strong>: The rekor cli does it&#8217;s own local verification of the Merkle Tree hashes to ensure that this entry is actually part of the (Trillian) immutable database</p>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Current Root Hash: 5fb7b1a022dd3be05cf5fef2df707643c7a53017308cd2c89ed001aa548443c0
+Entry Hash: 2e98bd711b91a29bddf6404b099f814a2239a532e98833b1ba6d0b0e1867a381
+Entry Index: 9
+Current Tree Size: 16
+
+Inclusion Proof:
+SHA256(0x01 | 85ace344c1c80658854234e41bff2a1ce31f7999e68e4860d1eaa116cfd7cdf9 | 2e98bd711b91a29bddf6404b099f814a2239a532e98833b1ba6d0b0e1867a381) =
+	238a209ff9d27b57a35cd1356c3589b992c360cad310e769991a790d15e7cfcb
+
+SHA256(0x01 | 238a209ff9d27b57a35cd1356c3589b992c360cad310e769991a790d15e7cfcb | 5e50963e898b26e511448b10335fa983a4d38a90f957fbfe534071ec6adcde85) =
+	21525b993be846858237c25378378bb31ecb71d4c26fb65a27ac2fd91e7fe427
+
+SHA256(0x01 | 21525b993be846858237c25378378bb31ecb71d4c26fb65a27ac2fd91e7fe427 | 85ccf7b3b973d92891ddc285bebe1d94e75a09cd662046171a376a178ac1f1f2) =
+	599ffe69cdeaab7e7ed04c7d8d57ff4bd0c9285ebd103ab1355f29d873746943
+
+SHA256(0x01 | f637a35851bee3a3cb9fdf330a512aaeac772fcbac12e2359091651bca5b0f14 | 599ffe69cdeaab7e7ed04c7d8d57ff4bd0c9285ebd103ab1355f29d873746943) =
+	5fb7b1a022dd3be05cf5fef2df707643c7a53017308cd2c89ed001aa548443c0</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="searching-rekor"><a class="anchor" href="#searching-rekor"></a>Searching Rekor</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Besides knowing the exact UUID of the rekor entry, we can also search rekor for entries by any of the following:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Public Key</strong>: See all the entries that have artifacts signed by a given public key</p>
+</li>
+<li>
+<p><strong>Artifact Content</strong>: Find all the entries that match a given artifact&#8217;s content</p>
+</li>
+<li>
+<p><strong>Artifact SHA</strong>: Find all the entries that match a given artifact&#8217;s sha</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rekor search --help</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">Searches the Rekor index to find entries by artifact or public key
+
+Usage:
+  rekor search [flags]
+
+Flags:
+      --artifact fileOrURLFlag     path or URL to artifact file
+  -h, --help                       help for search
+      --pki-format pkiFormat       format of the signature and/or public key (default pgp)
+      --public-key fileOrURLFlag   path or URL to public key file
+      --sha uuid                   the SHA256 sum of the artifact
+
+Global Flags:
+      --api-key string     API key for api.rekor.dev
+      --config string      config file (default is $HOME/.rekor.yaml)
+      --format format      Command output format (default default)
+      --rekor_server url   Server address:port (default <a href="https://api.rekor.dev" class="bare">https://api.rekor.dev</a>)
+      --store_tree_state   whether to store tree state in between invocations for additional verification (default true)</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Let&#8217;s prove that we can find our entry in rekor based on the SHA of the current <code>LAST_BUILD_NODE</code></p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ARTIFACT_SHA=$(sha256sum &lt;(echo -n ${ARTIFACT_CONTENT}) | awk '{print $1}')
+rekor search --sha ${ARTIFACT_SHA}</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Found matching entries (listed by UUID):
+2e98bd711b91a29bddf6404b099f814a2239a532e98833b1ba6d0b0e1867a381</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Prove that this is our entry by grepping on the <code>UUID</code></p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rekor search --sha ${ARTIFACT_SHA} | grep ${UUID}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>We can also search more broadly.  Let&#8217;s now see <em>all</em> the entries that have been added by Ploigos using its public key</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rekor search --public-key &lt;(echo $PLOIGOS_PUBLIC_KEY)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>This should yield output like the below (you might only have two entries based on the REKOR server)</p>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Found matching entries (listed by UUID):
+e7f27ffd266ffbb20e7d0c3bece372a6798e77e3cf974e7b9d5af63c59fe86e5
+d6be79fb60d3b81ba19466d37f5a59dd728eecb920b5b20c8dbbc41b83b98544
+a3e16327959823f14d998155d26f85860694f205c418a06982c7c3ef5adb88a4
+225b595ec764489bab90058b856020af9592fad97147404490a2669b6db64041
+2e98bd711b91a29bddf6404b099f814a2239a532e98833b1ba6d0b0e1867a381
+85ace344c1c80658854234e41bff2a1ce31f7999e68e4860d1eaa116cfd7cdf9
+a4189b538ca8709c785047dd4523e58dfe2ac9b2abf2a87a50d41b86ac21db7e
+ea359567654739077dc1408d07c260fcb1a2cb1e3d51754e6f176eb2b582625f
+98416c3920778053289ed0a22dd7c1e1d53886412ab8cfce93bbc3c5a3a6becb
+882b77e04f2067038dd5511be744e7aae1396d7d6480f789cc098eb3f65e7314
+5fb253a9eee83eb77ca29bb9cb6bd62ee0b4f936df59c36ba50a2e4c1212074a
+5a272da7778e4c383f08d42b740ec99f36fe521aae83fc6b2496304ee81be17d
+e012638d452464ed63ff0580638f44058834fb32dd007a528748fa3dbf44fdb4
+37f6d82c41d5fd824ec22688feeef7eec6cd3a5b4e7c36735ffeeacad99edbf9</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Let&#8217;s verify that the entry we were just looking at is included in the list returned:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rekor search --public-key &lt;(echo $PLOIGOS_PUBLIC_KEY) | grep $UUID</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">2e98bd711b91a29bddf6404b099f814a2239a532e98833b1ba6d0b0e1867a381</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Point out that you can have multiple rekor databases.  If we search for this public key in the public rekor database we won&#8217;t find it</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">rekor search --public-key &lt;(echo $PLOIGOS_PUBLIC_KEY) --rekor_server <a href="https://api.rekor.dev" class="bare">https://api.rekor.dev</a></code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">No matching entries were found</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_inspecting_build_output"><a class="anchor" href="#_inspecting_build_output"></a>Inspecting Build Output</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Now that we&#8217;re satisfied with the provenance of the build output, let&#8217;s do some checks on it.  First, let&#8217;s review what&#8217;s in the node:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo ${LAST_BUILD_NODE} | jq</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "stepName": "sign-container-image",
+  "stepOutput": "owGbwMvMwMEYtPJFyQXusnbG0wf2JDEkNIWLVSslF2WWZCYn5ihZVStlpqTmlWSWVILYKfnJ2alFukWpaalFqXnJqUpWSnmpFaXFulCJlNSy4tTk/IJivcQCIJGcU1pcAhROszBK1AMTqRWJuQU5qXr5BUBDc5L1kvNz9QtyEkvS8oty9YHG6haWJhZlAw3MLcvTzUrNy87MK9YtLknRTSsqzSyxMtQz0DPSzU3MzFOq1VHKzE1MT0VyVm5iXmZaanGJbkpmOpACOq44I9HI1MzK0MjMwNw0zTjRwjwpOdHAMs3SyNzI0CwtJSUtzSjFNDnNwsQy2djSNMnE1NDC3MDIPM3cLNUwzdAgzdQsycI0EWRZSWUByLuJJfm5mckKyfl5JUBXpBYpFGem5yWWlBalghTlF5Rk5udBwi25KBWouAihx1TPVM9ICWhSZi7QdcBwULIyNDO0NDQ1MTc0qK3tZDRmYWDkYJAVU2QxOH6HS+HfLAGvY+duwOKHlQkUNwxcnAIwka932f/wbg6ZblLJVjnhPO/xoI3Tuv6U2orJm7zxTXtcu3IBe8r3qi1idnf1i//Nf/TQdMsV9p0zs2Z5W5xa+k+R41RwrZXnpZkvrv73UJNyMn+qz3P5QvZvFo7FdyofpO9mLdY8tyyV49Ymp1CPKdteX2EI808o89A6aXj6n09GzjF5aeO2y4GyNZcmGTnsOPp2u+T8yQ2PT/xmcnuy+dKZ0kcXbE1qNt9rPxpe9mzVBs7N7YeSfZ55Oxr2BdhWTix35j0joHhRYoZvQ5Ot4wymC792zefcebZu6Zf/ejc+sEXviGbLWyrvfWengYnv6ZOfHUWXf5gVr2jX9vj6HI/kKdye3d+SYjf6zWFqLorrq84HAA==",
+  "previousRekorUUID": "85ace344c1c80658854234e41bff2a1ce31f7999e68e4860d1eaa116cfd7cdf9"
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Next we check that the image signature (found at <code>stepOutput</code> in the <code>LAST_BUILD_OUTPUT</code>) actually was signed by rekor</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IMAGE_SIG_CONTENT=$(echo ${LAST_BUILD_NODE} | jq -r .stepOutput | base64 -d)
+gpg --decrypt &lt;(echo -n ${IMAGE_SIG_CONTENT}) | jq</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gpg: Signature made Fri Apr 23 05:11:50 2021 UTC
+gpg:                using RSA key 30C7DC0A20FE9A104AC6CED852A9E874D00B7687
+gpg: Good signature from "Tssc ServiceAccount &lt;<a href="mailto:tssc-service-account@redhat.com">tssc-service-account@redhat.com</a>&gt;" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 741A E224 6CA4 C749 AA30  ADAA 504A D67E 458B 5026
+     Subkey fingerprint: 30C7 DC0A 20FE 9A10 4AC6  CED8 52A9 E874 D00B 7687
+{
+  "critical": {
+    "identity": {
+      "docker-reference": "nexus-docker-devsecops.apps.cluster-f82a.f82a.example.opentlc.com/platform/ref-quarkus-mvn-jenkins-std-fruit:1.0.2-main"
+    },
+    "image": {
+      "docker-manifest-digest": "sha256:126075f3a87bca09f927216fddff2d5cf849c395b45187027f76e1f10f56b85a"
+    },
+    "type": "atomic container signature"
+  },
+  "optional": {
+    "creator": "atomic 5.5.2",
+    "timestamp": 1619154710
+  }
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Now let&#8217;s take a look at the previous entry and see what we can learn about the making of this image.  We can find the previous node by making use of <code>previousRekorUUID</code> in the <code>LAST_BUILD_OUTPUT</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>NOTE: Normally this would be a chain of entries, each from the previous step of the build process, but for the demo we only have one previous entry</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">PREVIOUS_BUILD_NODE_UUID=$(echo ${LAST_BUILD_NODE} | jq -r .previousRekorUUID)
+PREVIOUS_BUILD_NODE=$(rekor get --format json --uuid ${PREVIOUS_BUILD_NODE_UUID} | jq -r .Body.RekordObj.extraData | base64 -d )
+echo ${PREVIOUS_BUILD_NODE} | jq</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Inspect the output of the previous command (shown below).  Point out:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>previousRekorUUID</strong>: This is 0 indicating the end of the chain</p>
+</li>
+<li>
+<p><strong>stepName</strong>: For the demo, this is the same name as the last build output.  But in production this would be the name of the previous step</p>
+</li>
+<li>
+<p><strong>stepOutput</strong>: In general, this would be all the logs/metadata from the step output.  In our case this is just the output of the Ploigos run up to that point in the build chain</p>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "stepName": "sign-container-image",
+  "stepOutput": "c3RlcC1ydW5uZXItcmVzdWx0czoKICAgIGNvbnRhaW5lci1pbWFnZS1zdGF0aWMtY29tcGxpYW5jZS1zY2FuOgogICAgICAgID8gT3BlblNDQVAgLSBDb21wbGlhbmNlIC0gRXhhbXBsZSBDb21wbGlhbmNlIFByb2ZpbGUgZm9yIFVCSTggQ29udGFpbmVyIEltYWdlcwogICAgICAgICAgICBbQmFzZWQgb24geGNjZGZfb3JnLnNzZ3Byb2plY3QuY29udGVudF9wcm9maWxlX3N0...
+  4KICAgICAgICAgICAgc3VjY2VzczogdHJ1ZQo=",
+  "previousRekorUUID": 0
+}</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Let&#8217;s take a look at the <code>stepOutput</code> and show that this matches the build activities that led to this container image:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">vi &lt;(echo ${PREVIOUS_BUILD_NODE} | jq -r .stepOutput | base64 -d)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>The previous command caused the build output to be opened in <code>vi</code> (abbrieviated output below).  You can then scroll through this output showing that this represents the whole of the build</p>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">step-runner-results:
+    container-image-static-compliance-scan:
+        ? OpenSCAP - Compliance - Example Compliance Profile for UBI8 Container Images
+            [Based on xccdf_org.ssgproject.content_profile_standard]
+        :   artifacts:
+                html-report:
+                    description: ''
+                    value: /home/jenkins/agent/workspace/orm_reference-app-code_main-PADCUDD5BDKV7CSDPDLBO7FT6OR6WQBBFCQFSPHZDCDJ2MDULLRA/step-runner-working/container-image-static-compliance-scan/oscap-xccdf-report.html
+                stdout-report:
+                    description: ''
+                    value: /home/jenkins/agent/workspace/orm_reference-app-code_main-PADCUDD5BDKV7CSDPDLBO7FT6OR6WQBBFCQFSPHZDCDJ2MDULLRA/step-runner-working/container-image-static-compliance-scan/oscap-xccdf-out
+                xml-report:
+                    description: ''
+                    value: /home/jenkins/agent/workspace/orm_reference-app-code_main-PADCUDD5BDKV7CSDPDLBO7FT6OR6WQBBFCQFSPHZDCDJ2MDULLRA/step-runner-working/container-image-static-compliance-scan/oscap-xccdf-results.xml
+...
+    unit-test:
+        Maven:
+            artifacts:
+                maven-output:
+                    description: Standard out and standard error from 'mvn test'.
+                    value: /home/jenkins/agent/workspace/orm_reference-app-code_main-PADCUDD5BDKV7CSDPDLBO7FT6OR6WQBBFCQFSPHZDCDJ2MDULLRA/step-runner-working/unit-test/mvn_test_output.txt
+                surefire-reports:
+                    description: Surefire reports generated from 'mvn test'.
+                    value: /home/jenkins/agent/workspace/orm_reference-app-code_main-PADCUDD5BDKV7CSDPDLBO7FT6OR6WQBBFCQFSPHZDCDJ2MDULLRA/target/surefire-reports
+            message: ''
+            sub-step-implementer-name: Maven
+            success: true</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
 </div>
 </div>
 </div>
