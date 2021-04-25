@@ -1,0 +1,27 @@
+step-runner-results:
+    container-image-static-compliance-scan:
+        ? OpenSCAP - Compliance - Example Compliance Profile for UBI8 Container Images
+            [Based on xccdf_org.ssgproject.content_profile_standard]
+        :   artifacts:
+                html-report:
+                    description: ''
+                    value: /home/jenkins/agent/workspace/orm_reference-app-code_main-PADCUDD5BDKV7CSDPDLBO7FT6OR6WQBBFCQFSPHZDCDJ2MDULLRA/step-runner-working/container-image-static-compliance-scan/oscap-xccdf-report.html
+                stdout-report:
+                    description: ''
+                    value: /home/jenkins/agent/workspace/orm_reference-app-code_main-PADCUDD5BDKV7CSDPDLBO7FT6OR6WQBBFCQFSPHZDCDJ2MDULLRA/step-runner-working/container-image-static-compliance-scan/oscap-xccdf-out
+                xml-report:
+                    description: ''
+                    value: /home/jenkins/agent/workspace/orm_reference-app-code_main-PADCUDD5BDKV7CSDPDLBO7FT6OR6WQBBFCQFSPHZDCDJ2MDULLRA/step-runner-working/container-image-static-compliance-scan/oscap-xccdf-results.xml
+...
+    unit-test:
+        Maven:
+            artifacts:
+                maven-output:
+                    description: Standard out and standard error from 'mvn test'.
+                    value: /home/jenkins/agent/workspace/orm_reference-app-code_main-PADCUDD5BDKV7CSDPDLBO7FT6OR6WQBBFCQFSPHZDCDJ2MDULLRA/step-runner-working/unit-test/mvn_test_output.txt
+                surefire-reports:
+                    description: Surefire reports generated from 'mvn test'.
+                    value: /home/jenkins/agent/workspace/orm_reference-app-code_main-PADCUDD5BDKV7CSDPDLBO7FT6OR6WQBBFCQFSPHZDCDJ2MDULLRA/target/surefire-reports
+            message: ''
+            sub-step-implementer-name: Maven
+            success: true

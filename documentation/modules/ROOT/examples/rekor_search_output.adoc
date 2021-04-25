@@ -1,0 +1,18 @@
+Searches the Rekor index to find entries by artifact or public key
+
+Usage:
+  rekor search [flags]
+
+Flags:
+      --artifact fileOrURLFlag     path or URL to artifact file
+  -h, --help                       help for search
+      --pki-format pkiFormat       format of the signature and/or public key (default pgp)
+      --public-key fileOrURLFlag   path or URL to public key file
+      --sha uuid                   the SHA256 sum of the artifact
+
+Global Flags:
+      --api-key string     API key for api.rekor.dev
+      --config string      config file (default is $HOME/.rekor.yaml)
+      --format format      Command output format (default default)
+      --rekor_server url   Server address:port (default https://api.rekor.dev)
+      --store_tree_state   whether to store tree state in between invocations for additional verification (default true)

@@ -1,0 +1,22 @@
+Verifies an entry exists in the transparency log through an inclusion proof
+
+Usage:
+  rekor verify [flags]
+
+Flags:
+      --artifact fileOrURLFlag     path or URL to artifact file
+      --entry fileOrURLFlag        path or URL to pre-formatted entry file
+  -h, --help                       help for verify
+      --log-index logIndex         the index of the entry in the transparency log
+      --pki-format pkiFormat       format of the signature and/or public key (default pgp)
+      --public-key fileOrURLFlag   path or URL to public key file
+      --signature fileOrURLFlag    path or URL to detached signature file
+      --type typeFormat            type of entry (default rekord)
+      --uuid uuid                  UUID of entry in transparency log (if known)
+
+Global Flags:
+      --api-key string     API key for api.rekor.dev
+      --config string      config file (default is $HOME/.rekor.yaml)
+      --format format      Command output format (default default)
+      --rekor_server url   Server address:port (default https://api.rekor.dev)
+      --store_tree_state   whether to store tree state in between invocations for additional verification (default true)

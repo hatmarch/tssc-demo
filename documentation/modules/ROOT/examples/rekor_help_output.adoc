@@ -1,0 +1,21 @@
+Rekor command line interface tool
+
+Usage:
+  rekor [command]
+
+Available Commands:
+  get         Rekor get command
+  help        Help about any command
+  loginfo     Rekor loginfo command
+  logproof    Rekor logproof command
+  search      Rekor search command
+  upload      Upload an artifact to Rekor
+  verify      Rekor verify command
+
+Flags:
+      --api-key string     API key for api.rekor.dev
+      --config string      config file (default is $HOME/.rekor.yaml)
+      --format format      Command output format (default default)
+  -h, --help               help for rekor
+      --rekor_server url   Server address:port (default https://api.rekor.dev)
+      --store_tree_state   whether to store tree state in between invocations for additional verification (default true)
