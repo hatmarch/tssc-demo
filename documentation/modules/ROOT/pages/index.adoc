@@ -15,8 +15,6 @@ It makes use of the following components:
 [.tiles.browse]
 == Browse modules
 
-[.tile]
-.xref:01-setup.adoc[Demo Setup]
+* xref:setup.adoc[Demo Setup]
 
-[.tile]
 include::ROOT:partial$walkthrough_nav.adoc[]
