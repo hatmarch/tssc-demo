@@ -5,7 +5,7 @@ The demonstration of the Secure Software Factory covers the aspects below.
 
 [NOTE]
 ====
-For information about how to setup a cluster to be able to demonstrate these walkthroughs, see xref:01-setup.adoc[Demo Setup]
+For information about how to setup a cluster to be able to demonstrate these walkthroughs, see xref:setup.adoc[Demo Setup]
 ====
 
 == Walkthrough Demos
