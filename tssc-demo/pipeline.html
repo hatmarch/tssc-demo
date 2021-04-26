@@ -136,8 +136,8 @@
     <li><a href="#pipeline">Create and Examine Pipeline</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="https://github.com/hatmarch/tssc-demo/edit/master/documentation/modules/ROOT/pages/pipeline.adoc">Edit this Page</a></div>
-  </div>
+  <div class="edit-this-page"><a href="file:///workspaces/tssc-demo/documentation/modules/ROOT/pages/pipeline.adoc">Edit this Page</a></div>
+</div>
   <div class="content">
 <article class="doc">
 <h1 class="page">Secure Software Factory Demo</h1>
@@ -217,7 +217,7 @@ metadata:
 spec:
   appName: reference-app
   appRepo:
-    destinationRepoName: 'reference-app-code'
+    destinationRepoName: demo-app-code
     sourceUrl: 'https://github.com/hatmarch/ploigos-reference-app.git'
   autoStartPipeline: true
   helmRepo:
@@ -269,7 +269,7 @@ spec:
 <p>Let&#8217;s show how our reference app interacted with this pipeline by opening the <code>Jenkinsfile</code> of the  reference app by using this link:</p>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "http://$(oc get route gitea -n devsecops -o jsonpath='{.spec.host}')/platform/'reference-app-code'/src/branch/main/cicd/Jenkinsfile"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "http://$(oc get route gitea -n devsecops -o jsonpath='{.spec.host}')/platform/demo-app-code/src/branch/main/cicd/Jenkinsfile"</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -308,7 +308,7 @@ oc get secret gitea-admin-credentials -o jsonpath='{.data.password}' -n devsecop
 <p>Next show the config.yaml</p>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "http://$(oc get route gitea -n devsecops -o jsonpath='{.spec.host}')/platform/'reference-app-code'/src/branch/main/cicd/ploigos-step-runner-config/config.yml"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "http://$(oc get route gitea -n devsecops -o jsonpath='{.spec.host}')/platform/demo-app-code/src/branch/main/cicd/ploigos-step-runner-config/config.yml"</code></pre>
 </div>
 </div>
 <div class="imageblock">
@@ -319,7 +319,7 @@ oc get secret gitea-admin-credentials -o jsonpath='{.data.password}' -n devsecop
 </div>
 </li>
 <li>
-<p>Show that the Rekor server for this demo is running in cluster by switching to the 'tssc-demo-rekor' and looking at the topology view</p>
+<p>Show that the Rekor server for this demo is running in cluster by switching to the <code>tssc-demo-rekor</code> and looking at the topology view</p>
 <div class="imageblock">
 <div class="content">
 <img src="_images/rekor-topology.png" alt="rekor topology">

@@ -136,8 +136,8 @@
     <li><a href="#audit">Digital Attestation and Auditing with Rekor</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="https://github.com/hatmarch/tssc-demo/edit/master/documentation/modules/ROOT/pages/audit.adoc">Edit this Page</a></div>
-  </div>
+  <div class="edit-this-page"><a href="file:///workspaces/tssc-demo/documentation/modules/ROOT/pages/audit.adoc">Edit this Page</a></div>
+</div>
   <div class="content">
 <article class="doc">
 <h1 class="page">Secure Software Factory Demo</h1>
@@ -748,11 +748,68 @@ e012638d452464ed63ff0580638f44058834fb32dd007a528748fa3dbf44fdb4
 </div>
 </li>
 <li>
+<p>Let&#8217;s import our Ploigos public key and see if we can validate the image signature</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gpg --import &lt;(echo ${PLOIGOS_PUBLIC_KEY})</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gpg: key 1C5FAF896F5543EF: public key "Tssc ServiceAccount &lt;<a href="mailto:tssc-service-account@redhat.com">tssc-service-account@redhat.com</a>&gt;" imported
+gpg: Total number processed: 1
+gpg:               imported: 1</code></pre>
+</div>
+</div>
+</li>
+<li>
 <p>Next we check that the image signature (found at <code>stepOutput</code> in the <code>LAST_BUILD_OUTPUT</code>) actually was signed by rekor</p>
 <div class="listingblock console-input">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IMAGE_SIG_CONTENT=$(echo ${LAST_BUILD_NODE} | jq -r .stepOutput | base64 -d)
 gpg --decrypt &lt;(echo -n ${IMAGE_SIG_CONTENT}) | jq</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gpg: Signature made Fri Apr 23 05:11:50 2021 UTC
+gpg:                using RSA key 30C7DC0A20FE9A104AC6CED852A9E874D00B7687
+gpg: Good signature from "Tssc ServiceAccount &lt;<a href="mailto:tssc-service-account@redhat.com">tssc-service-account@redhat.com</a>&gt;" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 741A E224 6CA4 C749 AA30  ADAA 504A D67E 458B 5026
+     Subkey fingerprint: 30C7 DC0A 20FE 9A10 4AC6  CED8 52A9 E874 D00B 7687
+{
+  "critical": {
+    "identity": {
+      "docker-reference": "nexus-docker-devsecops.apps.cluster-f82a.f82a.example.opentlc.com/platform/ref-quarkus-mvn-jenkins-std-fruit:1.0.2-main"
+    },
+    "image": {
+      "docker-manifest-digest": "sha256:126075f3a87bca09f927216fddff2d5cf849c395b45187027f76e1f10f56b85a"
+    },
+    "type": "atomic container signature"
+  },
+  "optional": {
+    "creator": "atomic 5.5.2",
+    "timestamp": 1619154710
+  }
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>We can also confirm that the image sig in rekor matches what the build chain stored.  Go back to the jenkins logs and find the URL of the <code>signature-1</code> signature and paste the value into <code>STORED_SIG_URL</code></p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/stored-sig-url.png" alt="stored sig url">
+</div>
+</div>
+</li>
+<li>
+<p>Run the same gpg command, but this time using <code>STORED_SIG_URL</code></p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gpg --decrypt &lt;(wget -O- ${STORED_SIG_URL}) | jq</code></pre>
 </div>
 </div>
 <div class="listingblock console-output">
