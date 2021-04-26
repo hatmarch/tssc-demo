@@ -1,7 +1,7 @@
 # defaults file for ploigos_support
 ploigos_namespace: "devsecops"
 ploigos_operator_name: "ploigos-software-factory-operator"
-ploigos_operator_version: "0.3.1"
+ploigos_operator_version: "0.3.2"
 ploigos_operator_channel: "alpha"
 ploigos_cleanup: false
 ploigos_wait: false

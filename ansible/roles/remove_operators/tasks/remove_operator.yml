@@ -7,11 +7,11 @@
   block:
     - name: Print CSV
       debug:
-        msg: "current csv is: {{ subscription.status.currentCSV }}"
+        msg: "current csv is: {{ subscription.status.currentCSV | default ('[NONE]')}}"
     - name: Set CSV
       set_fact:
-        current_csv: "{{ subscription.status.currentCSV }}"
-        current_namespace: "{{ subscription.metadata.namespace }}"
+        current_csv: "{{ subscription.status.currentCSV | default('0.0.0') }}"
+        current_namespace: "{{ subscription.metadata.namespace | default('default') }}"
 
     - name: Delete Subscription
       k8s:
