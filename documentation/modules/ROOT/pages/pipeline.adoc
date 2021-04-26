@@ -100,7 +100,7 @@ echo "http://$(oc get route gitea -n devsecops -o jsonpath='pass:[{.spec.host}]'
 +
 image::config-yaml.png[title="Notice rekor-server-url config for RekorLog substep"]
 +
-. Show that the Rekor server for this demo is running in cluster by switching to the {rekor_project} and looking at the topology view
+. Show that the Rekor server for this demo is running in cluster by switching to the `{rekor_project}` and looking at the topology view
 +
 image::rekor-topology.png[title="RekorLog is also publicly accessible"]
 + 

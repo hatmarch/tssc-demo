@@ -381,6 +381,22 @@ echo pass:[${LAST_BUILD_NODE}] | jq
 }
 ----
 +
+. Let's import our Ploigos public key and see if we can validate the image signature
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+gpg --import <(echo pass:[${PLOIGOS_PUBLIC_KEY}])
+----
++
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+gpg: key 1C5FAF896F5543EF: public key "Tssc ServiceAccount <tssc-service-account@redhat.com>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1
+----
++
 . Next we check that the image signature (found at `stepOutput` in the `LAST_BUILD_OUTPUT`) actually was signed by rekor
 +
 [.console-input]
@@ -393,28 +409,25 @@ gpg --decrypt <(echo -n pass:[${IMAGE_SIG_CONTENT}]) | jq
 [.console-output]
 [source,bash,subs="+macros,+attributes"]
 ----
-gpg: Signature made Fri Apr 23 05:11:50 2021 UTC
-gpg:                using RSA key 30C7DC0A20FE9A104AC6CED852A9E874D00B7687
-gpg: Good signature from "Tssc ServiceAccount <tssc-service-account@redhat.com>" [unknown]
-gpg: WARNING: This key is not certified with a trusted signature!
-gpg:          There is no indication that the signature belongs to the owner.
-Primary key fingerprint: 741A E224 6CA4 C749 AA30  ADAA 504A D67E 458B 5026
-     Subkey fingerprint: 30C7 DC0A 20FE 9A10 4AC6  CED8 52A9 E874 D00B 7687
-{
-  "critical": {
-    "identity": {
-      "docker-reference": "nexus-docker-devsecops.apps.cluster-f82a.f82a.example.opentlc.com/platform/ref-quarkus-mvn-jenkins-std-fruit:1.0.2-main"
-    },
-    "image": {
-      "docker-manifest-digest": "sha256:126075f3a87bca09f927216fddff2d5cf849c395b45187027f76e1f10f56b85a"
-    },
-    "type": "atomic container signature"
-  },
-  "optional": {
-    "creator": "atomic 5.5.2",
-    "timestamp": 1619154710
-  }
-}
+include::example$sig_decrypt_output.adoc[]
+----
++
+. We can also confirm that the image sig in rekor matches what the build chain stored.  Go back to the jenkins logs and find the URL of the `signature-1` signature and paste the value into `STORED_SIG_URL`
++
+image::stored-sig-url.png[]
++
+. Run the same gpg command, but this time using `STORED_SIG_URL`
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+gpg --decrypt <(wget -O- pass:[${STORED_SIG_URL}]) | jq
+----
++
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+include::example$sig_decrypt_output.adoc[]
 ----
 +
 . Now let's take a look at the previous entry and see what we can learn about the making of this image.  We can find the previous node by making use of `previousRekorUUID` in the `LAST_BUILD_OUTPUT`

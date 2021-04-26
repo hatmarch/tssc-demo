@@ -1,0 +1,22 @@
+gpg: Signature made Fri Apr 23 05:11:50 2021 UTC
+gpg:                using RSA key 30C7DC0A20FE9A104AC6CED852A9E874D00B7687
+gpg: Good signature from "Tssc ServiceAccount <tssc-service-account@redhat.com>" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 741A E224 6CA4 C749 AA30  ADAA 504A D67E 458B 5026
+     Subkey fingerprint: 30C7 DC0A 20FE 9A10 4AC6  CED8 52A9 E874 D00B 7687
+{
+  "critical": {
+    "identity": {
+      "docker-reference": "nexus-docker-devsecops.apps.cluster-f82a.f82a.example.opentlc.com/platform/ref-quarkus-mvn-jenkins-std-fruit:1.0.2-main"
+    },
+    "image": {
+      "docker-manifest-digest": "sha256:126075f3a87bca09f927216fddff2d5cf849c395b45187027f76e1f10f56b85a"
+    },
+    "type": "atomic container signature"
+  },
+  "optional": {
+    "creator": "atomic 5.5.2",
+    "timestamp": 1619154710
+  }
+}
