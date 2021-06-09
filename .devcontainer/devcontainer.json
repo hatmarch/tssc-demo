@@ -38,7 +38,8 @@
 		"humao.rest-client",
 		"ms-kubernetes-tools.vscode-kubernetes-tools",
 		"haaaad.ansible",
-		"ms-python.python"
+		"ms-python.python",
+		"tsandall.opa"
 	],
 	"files.associations": {
         "**/ansible/**/*": "ansible",
