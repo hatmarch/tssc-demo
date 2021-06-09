@@ -46,3 +46,11 @@
     - r_gatekeeper_csv.resources[0].status.phase == "Succeeded"
   retries: 20
   delay: 10
+
+- name: Install Gatekeeper CR
+  k8s:
+    namespace: openshift-operators
+    state: present
+    resource_definition: "{{ lookup('template', 'opa/opa_gatekeeper.yaml.j2') }}"
+
+# FIXME: Wait for CRDs to appear and install constraint templates?  There are no status fields on the Gateway CR
