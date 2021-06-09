@@ -8,11 +8,11 @@
       kind: Namespace
       name: "{{ ploigos_namespace }}"
 
-  # - name: Ploigos install Hack
-  #   shell: |
-  #     oc adm policy add-cluster-role-to-user -n {{ ploigos_namespace }} -z rhsso-operator cluster-admin
-  #   register: result
-  #   failed_when: result.rc != 0
+  - name: Ploigos install Hack
+    shell: |
+      oc adm policy add-cluster-role-to-user -n {{ ploigos_namespace }} -z argocd-argocd-application-controller cluster-admin
+    register: result
+    failed_when: result.rc != 0
 
   - name: Install CatalogSource
     k8s:
