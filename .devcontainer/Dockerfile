@@ -2,7 +2,7 @@
 ARG PLOIGOS_STEPRUNNER_IMAGE=quay.io/ploigos/ploigos-tool-containers:v0.16.0
 FROM $PLOIGOS_STEPRUNNER_IMAGE as ploigos
 
-FROM quay.io/mhildenb/tssc-demo-base:latest
+FROM quay.io/mhildenb/tssc-demo-base:latest as podmandevcontainer
 
 USER root
 
@@ -17,6 +17,10 @@ RUN curl -L -o /usr/local/bin/opa https://github.com/open-policy-agent/opa/relea
 ENV GOPATH=/home/jboss/che
 ENV PATH="$PATH:/usr/local/kubebuilder/bin:/usr/local/kubebuilder/bin:/usr/local/go/bin:$GOPATH/bin:$DEMO_HOME/bin"
 
+RUN go get -v golang.org/x/tools/gopls honnef.co/go/tools/cmd/staticcheck github.com/uudashr/gopkgs/v2/cmd/gopkgs \
+    github.com/ramya-rao-a/go-outline github.com/go-delve/delve/cmd/dlv golang.org/x/lint/golint
+
+FROM podmandevcontainer as devcontainer
 USER jboss
 
 RUN go install -v golang.org/x/tools/gopls@v0.6.11 \

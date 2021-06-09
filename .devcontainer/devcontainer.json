@@ -1,7 +1,8 @@
 {
 	"name": "Secure Software Factory Demo",
-	"dockerFile": "Dockerfile",
 	"build": {
+		"dockerfile": "Dockerfile",
+		"target": "${env:DEVCONTAINER_TARGET_PREFIX}devcontainer",
 		"args": {
 			"PLOIGOS_STEPRUNNER_IMAGE" : "quay.io/ploigos/ploigos-tool-containers:v0.16.0",
 		}
