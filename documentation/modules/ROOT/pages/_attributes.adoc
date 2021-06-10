@@ -3,3 +3,4 @@
 :git_repo: https://github.com/hatmarch/tssc-demo
 :app_code_repo_name: demo-app-code
 :rekor_project: tssc-demo-rekor
+:opa_project: tssc-demo-opa
