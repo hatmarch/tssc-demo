@@ -8,8 +8,8 @@ spec:
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
-    # namespaces:
-    #   - "demo-cicd"
+    namespaces:
+      - "tssc-demo-opa"
   parameters:
     rekorServerURL: "http://rekor-server.tssc-demo-rekor.svc.cluster.local:3000"
 
