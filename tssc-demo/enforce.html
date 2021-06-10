@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Secure Software Factory Demo :: Secure Software Factory Demo</title>
-    <link rel="canonical" href="https://hatmarch.github.io/tssc-demo/tssc-demo/enforce.html">
+    <title>Secure Software Factory Demo (Dev Mode) :: Secure Software Factory Demo (Dev Mode)</title>
+    <link rel="canonical" href="http://localhost:3000/rhs-build-course/index.html/tssc-demo/enforce.html">
     <link rel="prev" href="audit.html#audit">
     <meta name="generator" content="Antora 2.3.4">
     <link rel="stylesheet" href="../_/css/site.css">
@@ -17,7 +17,7 @@
     <div class="navbar-brand">
       <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img
           src="../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
-      <a class="navbar-item" href="https://hatmarch.github.io/tssc-demo">Secure Software Factory Demo</a>
+      <a class="navbar-item" href="http://localhost:3000/rhs-build-course/index.html">Secure Software Factory Demo (Dev Mode)</a>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
         <span></span>
@@ -135,19 +135,469 @@
     <li><a href="#enforce">Policy Enforcement with Open Policy Agent</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="https://github.com/hatmarch/tssc-demo/edit/master/documentation/modules/ROOT/pages/enforce.adoc">Edit this Page</a></div>
-  </div>
+  <div class="edit-this-page"><a href="file:///workspaces/tssc-demo/documentation/modules/ROOT/pages/enforce.adoc">Edit this Page</a></div>
+</div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Secure Software Factory Demo</h1>
+<h1 class="page">Secure Software Factory Demo (Dev Mode)</h1>
 <div class="sect1">
 <h2 id="enforce"><a class="anchor" href="#enforce"></a>Policy Enforcement with Open Policy Agent</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this section we look how the Open Policy Agent Gatekeeper can allow us to enforce the use of only images with trusted provenance to run in certain situations in the cluster</p>
+<p>In this section we look how the Open Policy Agent Gatekeeper can allow us to enforce the use of only images with trusted provenance to run in certain situations in the cluster.  Specifically we&#8217;ll show how we can lock down a project/namespace (in this case <code>tssc-demo-opa</code>) to only allow pods with images of known provenance to run.</p>
 </div>
 <div class="paragraph">
+<p>For this section you&#8217;ll need access to a shell with a number of commands pre-installed, as in the <a href="audit.html" class="page">Rekor Section</a>.  Choose your OS to setup your shell appropriately</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_mac-osx"></a>Mac OSX</p>
+</li>
+<li>
+<p><a id="tabset1_others"></a>Others</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset1_mac-osx">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm -it -v $HOME/.kube:/home/jboss/.kube -v $(pwd):/workspaces/tssc-demo -v /var/run/docker.sock.raw:/var/run/docker.sock -w /workspaces/tssc-demo quay.io/mhildenb/tssc-demo-base:latest /bin/zsh</code></pre>
+</div>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset1_others">
+<div class="paragraph">
 <p><em>Coming Soon</em></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="image_tagging"><a class="anchor" href="#image_tagging"></a>Image Tagging</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This section is only necessary to follow if the ploigos toolchain doesn&#8217;t tag the output image with an alias that is named for the last build node in rekor</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>If you haven&#8217;t already, ensure you are logged into the OpenShift cluster with <code>cluster-admin</code> privileges.  Check current status with</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc whoami</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Assuming you&#8217;re wanting to test the provenance of an image from the build that has just been run you can get the rekor UUID at the last <code>log-index</code> in the database at using this command:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">REKOR_UUID=$(rekor get --log-index $(($(rekor loginfo 2>/dev/null | grep "Tree Size" | sed -r "s/Tree Size: ([0-9]+)/\1/g")-1)) | grep UUID | sed -r "s/UUID: ([[:alnum:]]+)$/\1/g")</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>As we need to tag the existing (cluster local) Nexus repository image, run the following command to log into the nexus image repo</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker login $(oc get route nexus-docker -n devsecops -o jsonpath='{.spec.host}') -u tssc -p $(oc get secret -n devsecops ploigos-platform-config-secrets -o jsonpath='{.data.config-secrets\.yml}' | base64 -d | yq r - 'step-runner-config.global-defaults.container-registries.nexus*.password')</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Next we&#8217;ll use <code>skopeo copy</code> to tag the image</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Set the <code>IMAGE_NAME</code> and <code>SOURCE_IMAGE_TAG</code> as you see fit.  By default this is likely to be</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">IMAGE_NAME="platform/ref-quarkus-mvn-jenkins-std-fruit"
+SOURCE_IMAGE_TAG="1.0.2-main"</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">skopeo copy docker://$(oc get route nexus-docker -n devsecops -o jsonpath='{.spec.host}')/${IMAGE_NAME}:${SOURCE_IMAGE_TAG} docker://$(oc get route nexus-docker -n devsecops -o jsonpath='{.spec.host}')/${IMAGE_NAME}:${REKOR_UUID}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>At this point you should have a runnable image that can be used in the later sections</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_opa_enforces_provenance"><a class="anchor" href="#_opa_enforces_provenance"></a>OPA Enforces Provenance</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to the OpenShift console and navigate to the <code>tssc-demo-opa</code> and show the (empty) developer perspective</p>
+</li>
+<li>
+<p>In a shell that is visible at the same time, attempt to run the following container</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc run untagged-image --image busybox -n tssc-demo-opa</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Error from server ([denied by enforce-rekor-verify]
+Image: busybox requires a tag): admission webhook "validation.gatekeeper.sh" denied the request: [denied by enforce-rekor-verify]
+Image: busybox requires a tag</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Next let&#8217;s try an image that has a tag that tells us nothing about the image&#8217;s provenance</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc run image-without-provenance-tag --image busybox:latest -n tssc-demo-opa</code></pre>
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Error from server ([denied by enforce-rekor-verify]
+Image: busybox:latest
+Status code: 422
+Body: {"code": 605, "message": "entryUUID in path should match '^[0-9a-fA-F]{64}$'"}
+): admission webhook "validation.gatekeeper.sh" denied the request: [denied by enforce-rekor-verify]
+Image: busybox:latest
+Status code: 422
+Body: {"code": 605, "message": "entryUUID in path should match '^[0-9a-fA-F]pass:{64}$'"}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>We are left with these two denied images.  Go on to the next section to show a little bit how this works</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/deny-image.png" alt="deny image">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="constraint_template"><a class="anchor" href="#constraint_template"></a>OPA Constraint Template</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>First go to the OpenShift console and navigate to the <code>tssc-demo-opa</code> and show the (empty) developer perspective</p>
+</li>
+<li>
+<p>Click on Search in the sidebar and from the resources dropdown start typing <code>constraint</code> to select the <code>ConstraintTemplate</code> custom resource</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/constraint-template-search.png" alt="constraint template search">
+</div>
+</div>
+</li>
+<li>
+<p>Select the <code>k8srekorverify</code> <code>Constraint Template</code> by clicking on the link</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/k8srekorverify-list.png" alt="k8srekorverify list">
+</div>
+</div>
+</li>
+<li>
+<p>Select the <code>YAML</code> and scroll down to show the <code>targets.rego</code> section of the YAML</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/k8srekorverify-detail.png" alt="k8srekorverify detail">
+</div>
+</div>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-rego hljs" data-lang="rego">apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8srekorverify
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRekorVerify
+    validation:
+      openAPIV3Schema:
+        properties:
+          rekorServerURL:
+            type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srekorverify
+
+        violation[{"msg": msg, "details": {}}] {
+            image := input_containers[_].image
+            not has_image_tag with input as image
+            msg := sprintf("\nImage: %v requires a tag", [image])
+        }
+
+        violation[{"msg": msg, "details": {}}] {
+            image := input_containers[_].image
+            # NOTE: if we don't have an image tag, then this violation will not
+            # apply, and the other violation will trigger instead to give a more
+            # meaningful message
+            has_image_tag with input as image
+
+            split_image := split(image,":")
+            image_tag := split_image[count(split_image)-1]
+
+            rekor_url := sprintf("%v/api/v1/log/entries/%v", [input.parameters.rekorServerURL, image_tag])
+            http.send({"method": "get", "url": rekor_url}, output)
+
+            output.status_code != 200
+            msg := sprintf("\nImage: %v\nStatus code: %v \nBody: %v\n", [image, output.status_code, output.body])
+        }
+
+        has_image_tag {
+          count(split(input,":")) &gt; 1
+        }
+
+        input_containers[c] {
+            c := input.review.object.spec.containers[_]
+        }
+
+        input_containers[c] {
+            c := input.review.object.spec.initContainers[_]
+        }</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Explain the important parts of the policy</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Two different ways to cause <strong>violation</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Lack of a tag</p>
+</li>
+<li>
+<p>Tag that doesn&#8217;t return a 200 from rekor lookup</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>input</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>parameters.rekorServerURL</code></p>
+</li>
+<li>
+<p><code>review.object</code> the k8s object that is policy is applied on</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>image</p>
+<div class="ulist">
+<ul>
+<li>
+<p>looking at both <code>containers</code> and <code>initContainers</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>spec</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>This is defining what instances of this ConstraintTemplate should look like</p>
+</li>
+<li>
+<p>Notice the parameters, which include <code>rekorServerURL</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Return to Search using the sidebar and this type look up <code>k8srekorverify</code> as the custom resource</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/k8s-rekor-verify-search.png" alt="k8s rekor verify search">
+</div>
+</div>
+</li>
+<li>
+<p>Click on the resource and then click on <code>enforce-rekor-verify</code> and show the <code>YAML</code> tab which should look something like the following</p>
+<div class="listingblock console-output">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRekorVerify
+metadata:
+  name: enforce-rekor-verify
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces:
+      - "tssc-demo-opa"
+  parameters:
+    rekorServerURL: "http://rekor-server.tssc-demo-rekor.svc.cluster.local:3000"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Point out the following aspects of the constraint-verify</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>match</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>This has been setup to match <code>Pods</code> in this case</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>namespaces</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Like its parent <code>ConstraintTemplate</code> this resource is not namespaced so we need to tell it which namespaces in which to enforce (all namespaces by default)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>parameters</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Notice that we are using the <em>service local</em> address of the rekor server</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="run_with_provenance"><a class="anchor" href="#run_with_provenance"></a>Run an image with Provenance</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open another shell (<strong>Shell 2</strong>) that is visible at the same time as the existing shell and the Developer Perspective of the <code>tssc-demo-opa</code></p>
+</li>
+<li>
+<p>Run the following command to demonstrate what&#8217;s going on with the local Rekor Server</p>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset2_shell-2"></a>Shell 2</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset2_shell-2">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">stern -n tssc-demo-rekor rekor-server</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>In the original shell, run the following command to run the image we just created</p>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset3_shell-1"></a>Shell 1</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset3_shell-1">
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc run image-with-provenance --image $(oc get route nexus-docker -n devsecops -o jsonpath='{.spec.host}')/${IMAGE_NAME}:${REKOR_UUID}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>At this point you should see a pod starting to spin up in the Topology View and logs appear in <code>Shell 1</code> that corresponds with the provenance lookup</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/provenance-pod.png" alt="provenance pod">
+</div>
+</div>
+</li>
+<li>
+<p>To further prove that this is the image we created, run the following commands to expose it</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc expose --port 8080 -n tssc-demo-opa pod image-with-provenance
+oc expose -n tssc-demo-opa svc image-with-provenance</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then navigate to the following endpoint (using this command to resolve the public URL)</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "http://$(oc get route image-with-provenance -n tssc-demo-opa -o jsonpath='{.spec.host}')/fruits"</code></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/exposed-provenance-image.png" alt="exposed provenance image">
+</div>
+</div>
+</li>
+</ol>
+</div>
 </div>
 </div>
 </div>
