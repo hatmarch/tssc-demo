@@ -121,7 +121,7 @@ Body: pass:[{"code": 605, "message": "entryUUID in path should match '^[0-9a-fA-
 +
 . We are left with these two denied images.  Go on to the next section to show a little bit how this works
 +
-image::deny-image.png[]
+image::deny-images.png[]
 
 [#constraint_template]
 === OPA Constraint Template 
