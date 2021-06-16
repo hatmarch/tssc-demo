@@ -1,0 +1,15 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRekorVerify
+metadata:
+  name: enforce-rekor-verify
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces:
+      - "tssc-demo-opa"
+  parameters:
+    rekorServerURL: "http://rekor-server.tssc-demo-rekor.svc.cluster.local:3000"
+

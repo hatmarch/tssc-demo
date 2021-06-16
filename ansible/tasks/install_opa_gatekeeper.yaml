@@ -46,3 +46,42 @@
     - r_gatekeeper_csv.resources[0].status.phase == "Succeeded"
   retries: 20
   delay: 10
+
+- name: Create OPA Namespace
+  k8s:
+    api_version: v1
+    kind: Namespace
+    name: '{{ opa_project }}'
+    state: present
+
+- name: Install OPA Gatekeeper CR on Cluster
+  k8s:
+    namespace: openshift-operators
+    state: present
+    resource_definition: "{{ lookup('template', 'opa/opa_gatekeeper.yaml.j2') }}"
+
+- name: Wait for ConstraintTemplate CRD
+  k8s_info:
+    api_version:  apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: constrainttemplates.templates.gatekeeper.sh
+  register: r_constrainttemplate_crd
+  until:
+    - r_constrainttemplate_crd is defined
+    - r_constrainttemplate_crd.resources is defined
+    - r_constrainttemplate_crd.resources[0] is defined
+    - r_constrainttemplate_crd.resources[0].status is defined
+    - r_constrainttemplate_crd.resources[0].status.acceptedNames is defined
+    - r_constrainttemplate_crd.resources[0].status.acceptedNames.kind == "ConstraintTemplate"
+  retries: 20
+  delay: 5
+
+- name: Install ConstraintTemplate (Generic Rekor Policy)
+  k8s:
+    state: present
+    resource_definition: "{{ lookup('template', 'opa/rekor-constraint-template.yaml')}}"
+
+- name: Apply Constraint Template (Rekor Policy)
+  k8s:
+    state: present
+    resource_definition: "{{ lookup('template', 'opa/rekor-constraint-verify.yaml')}}"

@@ -14,23 +14,11 @@
   when:
     - (ploigos_platform_full_install is not defined) or not (ploigos_platform_full_install | bool) 
 
-
-# - name: Delete demo projects
-#   k8s:
-#     state: absent
-#     kind: Namespace
-#     name: '{{ item }}'
-#   loop:
-#     - "{{ coolstore_project }}"
-#     - "{{ legacy_app_project }}"
-#     - "{{ dbz_project }}"
-#     - "{{ sandbox_project }}"
-#     - "{{ dev_project }}"
-#     - "{{ kafka_project }}"
-#     - "{{ db_project }}"
-
-# # Leave this as the last task in the playbook.
-# - name: Remove workload tasks complete
-#   debug:
-#     msg: "Remove Workload Tasks completed successfully."
-#   when: not silent|bool
+- name: Remove demo projects
+  k8s:
+    state: absent
+    kind: Namespace
+    name: '{{ item }}'
+  loop:
+    - "{{ rekor_project }}"
+    - "{{ opa_project }}"

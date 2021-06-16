@@ -4,6 +4,233 @@ include::_attributes.adoc[]
 [#enforce]
 == Policy Enforcement with Open Policy Agent
 
-In this section we look how the Open Policy Agent Gatekeeper can allow us to enforce the use of only images with trusted provenance to run in certain situations in the cluster
+In this section we look how the Open Policy Agent Gatekeeper can allow us to enforce the use of only images with trusted provenance to run in certain situations in the cluster.  Specifically we'll show how we can lock down a project/namespace (in this case `{opa_project}`) to only allow pods with images of known provenance to run.
 
+For this section you'll need access to a shell with a number of commands pre-installed, as in the xref::audit.adoc[Rekor Section].  Choose your OS to setup your shell appropriately
+
+[tabs]
+====
+Mac OSX::
++
+--
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+docker run --rm -it -v $HOME/.kube:/home/jboss/.kube -v $(pwd):/workspaces/tssc-demo -v /var/run/docker.sock.raw:/var/run/docker.sock -w /workspaces/tssc-demo quay.io/mhildenb/tssc-demo-base:latest /bin/zsh
+----
+--
+Others::
++
+--
 _Coming Soon_
+--
+====
+
+[#image_tagging]
+=== Image Tagging
+
+[NOTE]
+====
+This section is only necessary to follow if the ploigos toolchain doesn't tag the output image with an alias that is named for the last build node in rekor
+====
+
+. If you haven't already, ensure you are logged into the OpenShift cluster with `cluster-admin` privileges.  Check current status with
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc whoami
+----
++
+. Assuming you're wanting to test the provenance of an image from the build that has just been run you can get the rekor UUID at the last `log-index` in the database at using this command:
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+REKOR_UUID=pass:[$(rekor get --log-index $(($(rekor loginfo 2>/dev/null | grep "Tree Size" | sed -r "s/Tree Size: ([0-9\]+)/\1/g")-1)) | grep UUID | sed -r "s/UUID: ([[:alnum:\]\]+)$/\1/g")]
+----
+. As we need to tag the existing (cluster local) Nexus repository image, run the following command to log into the nexus image repo
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+docker login $(oc get route nexus-docker -n devsecops -o jsonpath='{.spec.host}') -u tssc -p $(oc get secret -n devsecops ploigos-platform-config-secrets -o jsonpath='{.data.config-secrets\.yml}' | base64 -d | yq r - 'step-runner-config.global-defaults.container-registries.nexus*.password')
+----
++
+. Next we'll use `skopeo copy` to tag the image
++
+[NOTE]
+====
+Set the `IMAGE_NAME` and `SOURCE_IMAGE_TAG` as you see fit.  By default this is likely to be
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+IMAGE_NAME="platform/ref-quarkus-mvn-jenkins-std-fruit"
+SOURCE_IMAGE_TAG="1.0.2-main"
+----
+====
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+skopeo copy docker://$(oc get route nexus-docker -n devsecops -o jsonpath='{.spec.host}')/$pass:[{IMAGE_NAME}]:$pass:[{SOURCE_IMAGE_TAG}] docker://$(oc get route nexus-docker -n devsecops -o jsonpath='{.spec.host}')/$pass:[{IMAGE_NAME}]:$pass:[{REKOR_UUID}]
+----
+
+At this point you should have a runnable image that can be used in the later sections
+
+=== OPA Enforces Provenance
+
+. Go to the OpenShift console and navigate to the `{opa_project}` and show the (empty) developer perspective
+. In a shell that is visible at the same time, attempt to run the following container
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc run untagged-image --image busybox -n {opa_project}
+----
++
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Error from server ([denied by enforce-rekor-verify] 
+Image: busybox requires a tag): admission webhook "validation.gatekeeper.sh" denied the request: [denied by enforce-rekor-verify] 
+Image: busybox requires a tag
+----
++
+. Next let's try an image that has a tag that tells us nothing about the image's provenance
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc run image-without-provenance-tag --image busybox:latest -n {opa_project}
+----
++
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+Error from server ([denied by enforce-rekor-verify] 
+Image: busybox:latest
+Status code: 422 
+Body: pass:[{"code": 605, "message": "entryUUID in path should match '^[0-9a-fA-F\]{64}$'"}]
+): admission webhook "validation.gatekeeper.sh" denied the request: [denied by enforce-rekor-verify] 
+Image: busybox:latest
+Status code: 422 
+Body: pass:[{"code": 605, "message": "entryUUID in path should match '^[0-9a-fA-F\]pass:{64}$'"}]
+----
++
+. We are left with these two denied images.  Go on to the next section to show a little bit how this works
++
+image::deny-images.png[]
+
+[#constraint_template]
+=== OPA Constraint Template 
+
+. First go to the OpenShift console and navigate to the `{opa_project}` and show the (empty) developer perspective
+. Click on Search in the sidebar and from the resources dropdown start typing `constraint` to select the `ConstraintTemplate` custom resource
++
+image::constraint-template-search.png[]
++
+. Select the `k8srekorverify` `Constraint Template` by clicking on the link
++
+image::k8srekorverify-list.png[]
++
+. Select the `YAML` and scroll down to show the `targets.rego` section of the YAML
++
+image::k8srekorverify-detail.png[]
++
+[.console-output]
+[source,rego,subs="+macros,+attributes"]
+----
+include::example$rekor-constraint-template.yaml[]
+----
++
+. Explain the important parts of the policy
+** Two different ways to cause *violation*
+*** Lack of a tag
+*** Tag that doesn't return a 200 from rekor lookup
+** `input`
+*** `parameters.rekorServerURL` 
+*** `review.object` the k8s object that is policy is applied on
+** image
+*** looking at both `containers` and `initContainers`
+** *spec*
+*** This is defining what instances of this ConstraintTemplate should look like
+*** Notice the parameters, which include `rekorServerURL`
++
+. Return to Search using the sidebar and this type look up `k8srekorverify` as the custom resource
++
+image::k8s-rekor-verify-search.png[]
++
+. Click on the resource and then click on `enforce-rekor-verify` and show the `YAML` tab which should look something like the following
++
+[.console-output]
+[source,bash,subs="+macros,+attributes"]
+----
+include::example$rekor-constraint-verify.yaml[]
+----
++
+. Point out the following aspects of the constraint-verify
+** *match*
+*** This has been setup to match `Pods` in this case
+** *namespaces*
+*** Like its parent `ConstraintTemplate` this resource is not namespaced so we need to tell it which namespaces in which to enforce (all namespaces by default)
+** parameters
+*** Notice that we are using the _service local_ address of the rekor server
+
+[#run_with_provenance]
+=== Run an image with Provenance
+
+. Open another shell (*Shell 2*) that is visible at the same time as the existing shell and the Developer Perspective of the `{opa_project}`
+. Run the following command to demonstrate what's going on with the local Rekor Server
++
+[tabs]
+====
+Shell 2::
++
+--
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+stern -n {rekor_project} rekor-server
+----
+--
+====
++
+. In the original shell, run the following command to run the image we just created
++
+[tabs]
+====
+Shell 1::
++
+--
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc run image-with-provenance --image $(oc get route nexus-docker -n devsecops -o jsonpath='{.spec.host}')/$pass:[{IMAGE_NAME}]:$pass:[{REKOR_UUID}]
+----
+--
+====
++
+. At this point you should see a pod starting to spin up in the Topology View and logs appear in `Shell 1` that corresponds with the provenance lookup
++
+image::provenance-pod.png[]
++
+. To further prove that this is the image we created, run the following commands to expose it
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+oc expose --port 8080 -n {opa_project} pod image-with-provenance
+oc expose -n {opa_project} svc image-with-provenance
+----
++
+Then navigate to the following endpoint (using this command to resolve the public URL)
++
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+echo "http://$(oc get route image-with-provenance -n {opa_project} -o jsonpath='{.spec.host}')/fruits"
+----
++
+image::exposed-provenance-image.png[]

@@ -6,6 +6,7 @@ become_override=false
 silent=false
 remove_operators=false
 rekor_project=tssc-demo-rekor
+opa_project=tssc-demo-opa
 install_prereq=false
 rekor_server_image=quay.io/mhildenb/rekor-server:0.4
 rekor_debug_support=true
